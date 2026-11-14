@@ -1,0 +1,21 @@
+# Xcode
+.DS_Store
+*/.DS_Store
+build/
+DerivedData/
+*.xcuserstate
+project.xcworkspace/
+xcuserdata/
+
+# XcodeGen
+# Keep project.yml versioned, ignore regenerated project user data
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Fastlane / Cocoapods (if ever used)
+Pods/
+vendor/

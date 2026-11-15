@@ -37,3 +37,24 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.gabrielsanchez.cullTests
+        GENERATE_INFOPLIST_FILE: "YES"
+
+schemes:
+  Cull:
+    build:
+      targets:
+        Cull: all
+        CullTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - CullTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release

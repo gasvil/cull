@@ -114,22 +114,22 @@
 
 ## 6. Block 5: View Model & State Management
 
-### Task 6.1 (ViewModel Test Setup & Failing Tests)
+### Task 6.1 (ViewModel Test Setup & Failing Tests) [x]
 * **Target File:** `CullTests/ViewModels/BurstTriageViewModelTests.swift`
 * **Test Intentions:**
-  * `[ ] testLoadAndAnalyze_whenPermissionGranted_emitsLoadedWithClusters` (`US-1`, `US-2`)
-  * `[ ] testLoadAndAnalyze_whenPermissionDenied_emitsUnauthorizedError` (`P4`)
-  * `[ ] testToggleKeeper_addsPhotoToKeepers_andRemovesFromDiscards` (`FR-9`, `Scenario 2`)
-  * `[ ] testDiscardAll_marksAllPhotosInClusterForDiscard` (`FR-10`, `Scenario 3`)
-  * `[ ] testKeepAll_clearsDiscards_andMarksClusterReviewedKept` (`FR-11`, `Scenario 4`)
-  * `[ ] testConfirmDiscards_invokesService_andRemovesClusterFromQueueOnSuccess` (`FR-12`)
-  * `[ ] testConfirmDiscards_whenCancelledInDialog_preservesClusterState` (`EC-6`)
+  * `[x] testLoadAndAnalyze_whenPermissionGranted_emitsLoadedWithClusters` (`US-1`, `US-2`)
+  * `[x] testLoadAndAnalyze_whenPermissionDenied_emitsUnauthorizedError` (`P4`)
+  * `[x] testToggleKeeper_addsPhotoToKeepers_andRemovesFromDiscards` (`FR-9`, `Scenario 2`)
+  * `[x] testDiscardAll_marksAllPhotosInClusterForDiscard` (`FR-10`, `Scenario 3`)
+  * `[x] testKeepAll_clearsDiscards_andMarksClusterReviewedKept` (`FR-11`, `Scenario 4`)
+  * `[x] testConfirmDiscards_invokesService_andRemovesClusterFromQueueOnSuccess` (`FR-12`)
+  * `[x] testConfirmDiscards_whenCancelledInDialog_preservesClusterState` (`EC-6`)
 
-### Task 6.2 (ViewModel Implementation)
+### Task 6.2 (ViewModel Implementation) [x]
 * **Target File:** `Cull/Features/BurstTriage/ViewModels/BurstTriageViewModel.swift`
 * **Scope:** Implementar `BurstTriageViewModel` (`@Observable @MainActor`) orquestando `PhotoLibraryServiceProtocol`, `BurstClusteringServiceProtocol` y `ImageQualityEvaluatorProtocol`. Gestionar selecciones multi-keeper, eliminar todo, mantener todo y cálculos dinámicos de espacio recuperable.
 
-### Task 6.3 (Refactor)
+### Task 6.3 (Refactor) [x]
 * Verificar inyección de dependencias por inicializador (DIP) y cumplimiento estricto de la Ley de Deméter (LoD).
 
 ---

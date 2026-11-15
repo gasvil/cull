@@ -1,19 +1,18 @@
-# SDD Phase 5: Verify — Quality Assurance & Validation (`a:verify`)
+# SDD Phase 3: Verify — Quality Assurance & Validation (`a:verify`)
 
 **Role:** Quality Assurance Engineer & Build Master
-**Objective:** Validate that the implementation fulfills `spec.md`, matches `design.md`, and passes the Swift/iOS quality gates defined in `agents.md`.
+**Objective:** Validate that the implementation fulfills `spec.md` and passes the Swift/iOS quality gates defined in `agents.md`.
 
 ## 1. Operating Principles
 - **Zero Tolerance:** A feature is complete only when 100% of tests pass, there are no new build warnings, and architectural boundaries hold.
 - **Evidence Over Opinion:** Every acceptance criterion needs a test result or a documented manual check with observed results.
-- **Auto-Correction Loop:** If a check fails, diagnose the error, return to an "Apply" mindset to fix the code, and re-run from the failing step. If the fix changes behavior or a contract, update `spec.md`/`design.md` first (with approval).
+- **Plan on Failure:** If any check fails, do not push and do not patch blindly. Prepare a prioritized fix plan and stop for approval.
 - **Environment:** Use Xcode tooling (`xcodegen`, `xcodebuild`, `xcrun`) with the commands below.
 
 ## 2. Workflow Steps
-1. **Context & Execution Plan Review**
+1. **Context Review**
    - Review `spec.md` to ensure no business rule was missed.
-   - Review `design.md` for contract and isolation compliance.
-   - Confirm every implementation task in `tasks.md` is marked `[x]`.
+   - Inspect the implementation for compliance with `agents.md` (concurrency, DI, errors, accessibility).
 2. **Project Regeneration & Build**
    ```bash
    xcodegen generate
@@ -29,7 +28,7 @@
      -derivedDataPath build/DerivedData \
      -enableCodeCoverage YES -resultBundlePath build/TestResults.xcresult test
    ```
-   If tests fail, diagnose the failure, fix the implementation, and re-run from this step.
+   If tests fail, stop and prepare a fix plan.
 4. **Coverage Validation**
    ```bash
    xcrun xccov view --report build/TestResults.xcresult
@@ -41,15 +40,23 @@
 6. **Acceptance & Manual Checks**
    - Walk through every acceptance criterion, including loading, empty, error, and offline states.
    - Verify accessibility (VoiceOver labels, Dynamic Type) and navigation flows.
-7. **Final Report & Cleanup**
-   - Write `verification.md` in the feature folder with the evidence.
-   - Mark the final Verification tasks in `tasks.md` as completed.
-   - Post the chat summary.
-   - **On PASS:** delete every `.md` file in the feature folder except `spec.md`, keeping only the living specification:
-     ```bash
-     find .ai/specs/<feature> -maxdepth 1 -type f -name '*.md' ! -name 'spec.md' -delete
-     ```
-   - **On FAIL:** keep `design.md`, `tasks.md`, and `verification.md` so the fix loop retains context.
+7. **Outcome, Cleanup & Push**
+   - Write `verification.md` with the evidence and post a short chat summary.
+   - **On PASS:**
+     - Delete `verification.md`, keeping only `spec.md`:
+       ```bash
+       find .ai/specs/<feature> -maxdepth 1 -type f -name '*.md' ! -name 'spec.md' -delete
+       ```
+     - Commit any pending verification fixes.
+     - Push the branch to GitHub:
+       ```bash
+       git push origin HEAD
+       ```
+       Use `git push -u origin HEAD` if the branch has no upstream yet.
+   - **On FAIL:**
+     - Keep `verification.md`.
+     - Do not push.
+     - Prepare a prioritized fix plan: failed check, likely cause, files or areas to change, tests to add, and the verification step to re-run. Stop and wait for approval.
 
 ## 3. Deliverable Format
 Write `.ai/specs/<feature>/verification.md` as working evidence and post a short summary in the chat. On PASS it is removed during cleanup; only `spec.md` survives.
@@ -69,7 +76,8 @@ Write `.ai/specs/<feature>/verification.md` as working evidence and post a short
 - Accessibility, edge cases, and navigation, with observed results.
 
 **5. Findings**
-- Blocking issues and non-blocking follow-ups, each with an owner or change ID.
+- On PASS: cleanup and push confirmation.
+- On FAIL: the prioritized fix plan (check, cause, files, tests, re-run step).
 
 ## Gate — Exit Checklist
 - [ ] `xcodegen generate` and the build succeed with no new warnings.
@@ -79,7 +87,8 @@ Write `.ai/specs/<feature>/verification.md` as working evidence and post a short
 - [ ] Every acceptance criterion has recorded evidence.
 - [ ] Accessibility and edge states are verified.
 - [ ] `verification.md` was written and the chat summary posted.
-- [ ] On PASS, `design.md`, `tasks.md`, and `verification.md` are deleted; only `spec.md` remains.
-- [ ] The final status is recorded in the report.
+- [ ] On PASS, only `spec.md` remains in the feature folder.
+- [ ] On PASS, the branch is pushed to `origin`.
+- [ ] On FAIL, `verification.md` is kept and a fix plan is presented.
 
 **Next:** merge the feature branch and close the SDD cycle.

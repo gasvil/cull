@@ -1,60 +1,43 @@
-# SDD Phase 4: Apply — Implementation (`a:apply`)
+# SDD Phase 2: Apply — Implementation (`a:apply`)
 
-**Role:** Senior Software Engineer
-**Objective:** Execute `tasks.md`. Write the actual production and test code, ensuring quality, exact adherence to `design.md` contracts, and compliance with `agents.md`.
+**Role:** Senior iOS Architect & Developer
+**Objective:** Implement the approved `spec.md` with sound iOS architecture, using the technical tools and approach you judge best for the problem. `agents.md` defines the non-negotiable stack and quality rules.
 
 ## 1. Operating Principles
-- **Strict Sequential Execution:** Execute blocks and tasks in order. Never implement out-of-order features.
-- **TDD Enforcement:** Add test doubles and failing tests first, then the minimum production code, then refactor.
-- **Chunking Rule:** Execute one logical block per user request (or the exact scope requested). If a block will exceed output limits, stop cleanly mid-block, update `tasks.md`, and wait for authorization to continue.
-- **Evidence Before Check:** Never mark a task `[x]` until the focused build and tests pass.
-- **State Tracking:** Update `tasks.md`, changing `[ ]` to `[x]` only for completed tasks. Never delete or rewrite completed tasks.
+- **Spec is the contract:** Implement only what `spec.md` requires. If a requirement is ambiguous, stop and resolve it before coding.
+- **Architect's judgment:** Choose the architecture, patterns, and tooling (XcodeGen, XCTest, SwiftLint, etc.) that best fit the feature. There is no prescribed task sequence.
+- **Project rules:** Follow `agents.md`: Swift 6 strict concurrency, SwiftUI + Observation, protocol-based DI, typed errors, accessibility, and no unnecessary dependencies or persistence.
+- **Small, verifiable steps:** Keep changes focused and build/test as you go.
+- **Evidence before done:** Do not call the work complete until the build succeeds and the relevant tests pass.
 
-## 2. Workflow Steps
-1. **Context Synchronization**
-   - Read `agents.md` for coding standards.
-   - Read `spec.md` and `design.md` for behavior and contracts.
-   - Read `tasks.md` to identify the next pending execution block.
-2. **Task Execution**
-   - Generate or modify test doubles and tests first.
-   - Generate, modify, or delete the source files required for the requested scope.
-   - Follow the interfaces defined in `design.md`; do not widen contracts silently.
-   - Run `xcodegen generate` whenever files are added or removed, then build and run the focused tests. Run the full suite if shared code changed. Adjust the simulator to one installed (`xcrun simctl list devices available`).
-     ```bash
-     xcodegen generate
-     xcodebuild -project Cull.xcodeproj -scheme Cull \
-       -destination 'platform=iOS Simulator,name=iPhone 16' test
-     ```
+## 2. Workflow
+1. **Load context**
+   - Read `.ai/specs/<feature>/spec.md` and `agents.md`.
+   - Inspect the existing code before changing it; preserve established patterns.
+2. **Resolve ambiguity**
+   - If the spec is incomplete or contradictory, stop, update `spec.md` with the user's approval, and continue.
+3. **Implement**
+   - Build the models, services, view models, views, navigation, and tests required by the spec.
+   - Prefer the simplest design that satisfies the requirements and stays testable.
+4. **Verify locally**
+   - Build the project and run the relevant tests; fix failures before reporting completion.
+   - Check empty, loading, error, and accessibility states.
+5. **Review and commit**
    - Self-review the diff; remove debug code, dead code, and unrelated changes.
-3. **State Update, Commit & Halt**
-   - Mark completed tasks `[x]` in `tasks.md`.
-   - Commit each block using Conventional Commits, with the feature in the footer:
-     ```text
-     feat(home): add swipe-to-delete
+   - Commit with Conventional Commits (e.g. `feat(home): add swipe-to-delete`).
 
-     Change: swipe-to-delete
-     ```
-   - **HALT:** Stop generating text. Summarize the files created, the tests run, and the next block, then wait for the user's next command.
-4. **Deviation Handling**
-   - If implementation contradicts `design.md`, stop, record the decision in `design.md`, and get approval before continuing.
-   - If the spec is ambiguous, stop and update `spec.md` (with approval). Never guess business rules.
+## 3. Deviation Handling
+- If the implementation must depart from `spec.md`, stop and update the spec first (with approval).
+- Never invent business rules or silently widen scope.
+- If a technical decision changes user-visible behavior, record it in `spec.md` as an `Assumption:` or requirement update.
 
-## 3. Execution Loop
-The user dictates the pace (e.g., "Execute Block 1", "Execute tasks 2.1 to 2.3", or "continue"). For each request:
-1. Parse `tasks.md` to identify the requested scope.
-2. Implement that scope following TDD.
-3. Run the focused tests, plus the full suite when shared code changed.
-4. Update `tasks.md` and commit the block.
-5. Halt and wait for the next command.
+## Gate — Exit Checklist
+- [ ] Every requirement in `spec.md` is implemented.
+- [ ] Build succeeds without new warnings.
+- [ ] Relevant tests pass.
+- [ ] Empty, loading, error, and accessibility states are handled.
+- [ ] Diff contains only feature-scoped changes.
+- [ ] Changes are committed.
+- [ ] Summary states what was built, what was tested, and any assumptions.
 
-Repeat until all implementation and UI tasks are complete, leaving only the Verification block.
-
-## Gate — Exit Checklist (per block)
-- [ ] Tests were written before or alongside the implementation.
-- [ ] Focused tests pass; full suite passes if shared code changed.
-- [ ] Build has no errors and no new warnings.
-- [ ] Diff contains only task-scoped changes.
-- [ ] `tasks.md` is updated and the block is committed.
-- [ ] Deviations, if any, are recorded in `design.md`.
-
-**Next:** `.ai/verify.md` (after all tasks are complete).
+**Next:** `.ai/verify.md`.

@@ -65,16 +65,14 @@ Apply **SOLID** (SRP, OCP, LSP, ISP, DIP), **KISS**, **DRY**, **YAGNI**, the **B
 
 ## 4. Spec-Driven Development
 
-All work follows the workflow defined in `.ai/`: `specify.md` → `design.md` → `tasks.md` → `apply.md` → `verify.md`. Per-feature artifacts live in `.ai/specs/<feature>/`.
+All work follows the workflow defined in `.ai/`: `specify.md` → `apply.md` → `verify.md`. Per-feature artifacts live in `.ai/specs/<feature>/`.
 
 The SDD phases are invoked with magic words in the user prompt. When one appears, load the corresponding file before acting and follow its gate:
 
 | Magic word | Loads |
 |------------|-------|
 | `a:specify` | `.ai/specify.md` |
-| `a:design` | `.ai/design.md` |
-| `a:tasks` | `.ai/tasks.md` |
 | `a:apply` | `.ai/apply.md` |
 | `a:verify` | `.ai/verify.md` |
 
-`spec.md` is always retained as the living specification. `design.md`, `tasks.md`, and `verification.md` are working artifacts and are deleted from the feature folder after a successful verification.
+`spec.md` is always retained as the living specification. `verification.md` is a working artifact and is deleted from the feature folder after a successful verification.

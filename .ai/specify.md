@@ -59,4 +59,4 @@ Once the user has answered (or assumptions are recorded), generate the formal `s
 - [ ] No implementation detail, type name, or technology choice appears in the spec.
 - [ ] The user has approved the spec.
 
-**Next:** `.ai/design.md`.
+**Next:** `.ai/apply.md`.

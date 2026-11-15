@@ -27,6 +27,8 @@
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 	</dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cull analiza tus fotos localmente para ayudarte a eliminar tomas borrosas o duplicadas y liberar espacio.</string>
 	<key>UILaunchScreen</key>
 	<dict/>
 	<key>UISupportedInterfaceOrientations</key>

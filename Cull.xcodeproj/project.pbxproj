@@ -17,6 +17,7 @@
 		6F1C4A28C89A1FC61B212486 /* BurstClusteringServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679073F11F25EA47B46AB784 /* BurstClusteringServiceTests.swift */; };
 		74EBF26314A2DBDB5394FEC0 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EC613A9F085653571F4D9D /* AppEnvironment.swift */; };
 		79152968228E01789A66AAB3 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D098D42076BA413BAACE558 /* HomeViewModelTests.swift */; };
+		7BE9C1DECE32C685F6F6A7FF /* PhotoLibraryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE69AC3D730998C36DFB133D /* PhotoLibraryService.swift */; };
 		7D18DCD6C3F8E75349973F3F /* BurstClusteringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECCF5DC1451D6B886B55FCC /* BurstClusteringService.swift */; };
 		8048778B6470FD5DA01F818B /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895066A7BE9714BD93DF0D0C /* AppError.swift */; };
 		8472BD9B5FEBF53E243CAE13 /* BurstTriageMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9F0C9FE5CC62A975D4AE9 /* BurstTriageMocks.swift */; };
@@ -24,6 +25,7 @@
 		88585080823CDDE60C48F18C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8141975352D1C5715FF2B3C /* HomeView.swift */; };
 		A05A78C8E55CA1F8C1CAB9F2 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F296C3871FB15658D5E4ECCF /* AppTheme.swift */; };
 		ADBFD1E3FFCC4A7B2A7A7720 /* CullApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA9F9840533D31E49B73C4F /* CullApp.swift */; };
+		AF3593E215562E12AEC604FB /* PhotoLibraryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EE844DB7B673A8963C8CCF /* PhotoLibraryServiceTests.swift */; };
 		C1B79E8BEACF77912C447E74 /* BurstClusteringServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F177EE3815AE95B7FCDB888 /* BurstClusteringServiceProtocol.swift */; };
 		DC05311D58F0FF20B76D5AE4 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C618E29FE6B42DC8C90DE63B /* HomeViewModel.swift */; };
 		E8749F629F102F281B1CAF10 /* ImageQualityEvaluatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C199B43A1ED568354B2C111B /* ImageQualityEvaluatorTests.swift */; };
@@ -49,6 +51,7 @@
 		679073F11F25EA47B46AB784 /* BurstClusteringServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstClusteringServiceTests.swift; sourceTree = "<group>"; };
 		7C58CFBC38EFA6BD2720F695 /* HomeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeItem.swift; sourceTree = "<group>"; };
 		7E1DD7DB21C0F3366937B7C9 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
+		80EE844DB7B673A8963C8CCF /* PhotoLibraryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryServiceTests.swift; sourceTree = "<group>"; };
 		8285E597C2695DB8D66602CC /* VisionQualityEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionQualityEvaluator.swift; sourceTree = "<group>"; };
 		888CC512D6A2728203DF1565 /* BurstTriageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageModels.swift; sourceTree = "<group>"; };
 		88B312EEE657DC1F385C597D /* PhotoLibraryServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryServiceProtocol.swift; sourceTree = "<group>"; };
@@ -59,6 +62,7 @@
 		9F177EE3815AE95B7FCDB888 /* BurstClusteringServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstClusteringServiceProtocol.swift; sourceTree = "<group>"; };
 		A0C223F7827E523D70D4CDF9 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
 		BAA9F9840533D31E49B73C4F /* CullApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CullApp.swift; sourceTree = "<group>"; };
+		BE69AC3D730998C36DFB133D /* PhotoLibraryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryService.swift; sourceTree = "<group>"; };
 		C199B43A1ED568354B2C111B /* ImageQualityEvaluatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageQualityEvaluatorTests.swift; sourceTree = "<group>"; };
 		C618E29FE6B42DC8C90DE63B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		C8141975352D1C5715FF2B3C /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -108,6 +112,7 @@
 		301DE7F782B544D643BB9D67 /* PhotoLibrary */ = {
 			isa = PBXGroup;
 			children = (
+				BE69AC3D730998C36DFB133D /* PhotoLibraryService.swift */,
 				88B312EEE657DC1F385C597D /* PhotoLibraryServiceProtocol.swift */,
 			);
 			path = PhotoLibrary;
@@ -172,6 +177,7 @@
 			children = (
 				679073F11F25EA47B46AB784 /* BurstClusteringServiceTests.swift */,
 				C199B43A1ED568354B2C111B /* ImageQualityEvaluatorTests.swift */,
+				80EE844DB7B673A8963C8CCF /* PhotoLibraryServiceTests.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -384,6 +390,7 @@
 				88585080823CDDE60C48F18C /* HomeView.swift in Sources */,
 				DC05311D58F0FF20B76D5AE4 /* HomeViewModel.swift in Sources */,
 				68B23093A9D2BC861FD1AA34 /* ImageQualityEvaluatorProtocol.swift in Sources */,
+				7BE9C1DECE32C685F6F6A7FF /* PhotoLibraryService.swift in Sources */,
 				4ADB987898503BE4970CC794 /* PhotoLibraryServiceProtocol.swift in Sources */,
 				5D2E3DFBA25A99D452887202 /* VisionQualityEvaluator.swift in Sources */,
 			);
@@ -398,6 +405,7 @@
 				8472BD9B5FEBF53E243CAE13 /* BurstTriageMocks.swift in Sources */,
 				79152968228E01789A66AAB3 /* HomeViewModelTests.swift in Sources */,
 				E8749F629F102F281B1CAF10 /* ImageQualityEvaluatorTests.swift in Sources */,
+				AF3593E215562E12AEC604FB /* PhotoLibraryServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

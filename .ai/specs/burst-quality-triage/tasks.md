@@ -94,20 +94,20 @@
 
 ## 5. Block 4: Photo Library Service (PhotoKit Abstraction)
 
-### Task 5.1 (Photo Library Test Setup & Failing Tests)
+### Task 5.1 (Photo Library Test Setup & Failing Tests) [x]
 * **Target File:** `CullTests/Services/PhotoLibraryServiceTests.swift`
 * **Test Intentions:**
-  * `[ ] testFetchRecentAssets_mapsPHAssetsToPhotoAssetModels` (`P7`)
-  * `[ ] testDeleteAssets_whenAuthorized_executesChangeRequest` (`FR-12`, `NFR-4`)
-  * `[ ] testDeleteAssets_whenUserCancelsSystemDialog_returnsFalseWithoutError` (`EC-6`, `P4`)
+  * `[x] testFetchRecentAssets_mapsPHAssetsToPhotoAssetModels` (`P7`)
+  * `[x] testDeleteAssets_whenAuthorized_executesChangeRequest` (`FR-12`, `NFR-4`)
+  * `[x] testDeleteAssets_whenUserCancelsSystemDialog_returnsFalseWithoutError` (`EC-6`, `P4`)
 
-### Task 5.2 (Photo Library Implementation)
+### Task 5.2 (Photo Library Implementation) [x]
 * **Target Files:**
   * `Cull/Services/PhotoLibrary/PhotoLibraryServiceProtocol.swift`
   * `Cull/Services/PhotoLibrary/PhotoLibraryService.swift`
 * **Scope:** Implementar la integración con `PHPhotoLibrary` y `PHAssetChangeRequest.deleteAssets` (papelera nativa recuperable `NFR-4`).
 
-### Task 5.3 (Refactor)
+### Task 5.3 (Refactor) [x]
 * Asegurar que todas las llamadas asíncronas respeten Swift Concurrency y propaguen errores tipados `AppError`.
 
 ---

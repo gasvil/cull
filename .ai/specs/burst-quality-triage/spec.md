@@ -19,7 +19,8 @@ Empoderar al usuario para recuperar espacio de almacenamiento y eliminar el deso
 * **US-3 (Selección Múltiple de Tomas Conservadas):** Como usuario, quiero poder conservar más de una foto del grupo cuando haya varias tomas con buenas expresiones o ángulos que me interese guardar, descartando únicamente las tomas sobrantes.
 * **US-4 (Descarte Completo de Lotes Inútiles):** Como usuario, quiero poder descartar todo el lote con una sola acción cuando toda la ráfaga haya salido mal (accidental, borrosa o irrelevante).
 * **US-5 (Conservación Total sin Cambios):** Como usuario, quiero poder omitir el triaje y conservar todo el grupo intacto con una sola acción cuando decida no purgar ninguna toma.
-* **US-6 (Revisión y Aprobación Rápida con Espacio Recuperable):** Como usuario, quiero ver claramente el espacio total en megabytes que recuperaré antes de confirmar cualquier eliminación.
+* **US-6 (Revisión y Aprobación Rápida con Espacio Recuperable):** Como usuario, quiero ver claramente la previsualización real de cada foto y el espacio total en megabytes que recuperaré antes de confirmar cualquier eliminación.
+* **US-7 (Persistencia Eficiente del Análisis):** Como usuario, cuando salga y vuelva a entrar a la pantalla de Triaje de Ráfagas sin que hayan ingresado nuevas fotos al carrete, quiero ver el último análisis de inmediato sin esperar a que se procese todo nuevamente.
 
 ---
 
@@ -37,6 +38,8 @@ Empoderar al usuario para recuperar espacio de almacenamiento y eliminar el deso
 * **FR-10 (Acción Rápida 'Eliminar Todo el Lote'):** El sistema DEBE ofrecer una acción explícita para marcar todas las fotos del lote (incluida la mejor valorada) como candidatas a descarte, requiriendo confirmación si contiene fotos favoritas.
 * **FR-11 (Acción Rápida 'Mantener Todo el Lote'):** El sistema DEBE ofrecer una acción explícita para desmarcar todas las fotos de descarte y archivar el grupo como revisado sin enviar ninguna foto a la papelera.
 * **FR-12 (Confirmación de Depuración en Lote):** Al pulsar la confirmación de descarte, el sistema DEBE invocar el diálogo nativo de papelera del sistema operativo únicamente para los elementos marcados para descarte.
+* **FR-13 (Previsualización Visual de Miniaturas):** La interfaz DEBE renderizar la imagen real de cada fotografía del lote en tamaño miniatura optimizado para visualización rápida.
+* **FR-14 (Reutilización del Análisis Previo / Cache Inteligente):** Al acceder a la pantalla de Triaje, el sistema DEBE comprobar si el conjunto de fotos recientes no ha cambiado (mismo conteo e identificadores más recientes). Si no hay cambios, DEBE restaurar inmediatamente los lotes previamente analizados sin re-ejecutar el análisis de calidad ni bloquear la interfaz.
 
 ---
 
@@ -104,6 +107,13 @@ Empoderar al usuario para recuperar espacio de almacenamiento y eliminar el deso
 * **Given** 2 fotos idénticas con un puntaje de calidad empatado en 0.8800
 * **When** se define la recomendación inicial
 * **Then** la foto con fecha de captura más antigua DEBE ser la recomendada inicialmente como conservada (`FR-5`).
+
+### Scenario 7: Reutilización de análisis sin nuevas fotos
+* **Given** un análisis completado previamente con 2 grupos de ráfagas
+* **And** el usuario sale de la pantalla de triaje y regresa sin que se hayan capturado nuevas fotos en el carrete
+* **When** la pantalla de triaje inicia su carga
+* **Then** el sistema DEBE presentar de inmediato los grupos analizados previamente sin volver a mostrar el estado de análisis completo (`FR-14`)
+* **And** no debe re-analizar las imágenes con el motor de visión (`US-7`).
 
 ---
 

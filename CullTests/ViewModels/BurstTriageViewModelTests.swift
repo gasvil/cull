@@ -44,6 +44,52 @@ final class BurstTriageViewModelTests: XCTestCase {
         }
     }
 
+    func testPrepareView_whenIdle_transitionsToSelectingDate() {
+        XCTAssertEqual(sut.state, .idle)
+        sut.prepareView()
+        XCTAssertEqual(sut.state, .selectingDate)
+    }
+
+    func testChangeDateFilter_transitionsBackToSelectingDate() async {
+        let baseTime = Date()
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2]
+
+        await sut.loadAndAnalyzeClusters()
+        XCTAssertTrue(matchesLoaded(sut.state))
+
+        sut.changeDateFilter()
+        XCTAssertEqual(sut.state, .selectingDate)
+    }
+
+    private func matchesLoaded(_ state: BurstTriageViewState) -> Bool {
+        if case .loaded = state { return true }
+        return false
+    }
+
+    func testResolveCurrentDateRange_handlesAllModes() {
+        sut.filterMode = .today
+        let todayRange = sut.resolveCurrentDateRange()
+        XCTAssertLessThanOrEqual(todayRange.start, todayRange.end)
+
+        sut.filterMode = .yesterday
+        let yesterdayRange = sut.resolveCurrentDateRange()
+        XCTAssertLessThanOrEqual(yesterdayRange.start, yesterdayRange.end)
+
+        sut.filterMode = .last7Days
+        let last7Range = sut.resolveCurrentDateRange()
+        XCTAssertLessThanOrEqual(last7Range.start, last7Range.end)
+
+        sut.filterMode = .singleDate
+        let singleRange = sut.resolveCurrentDateRange()
+        XCTAssertLessThanOrEqual(singleRange.start, singleRange.end)
+
+        sut.filterMode = .dateRange
+        let customRange = sut.resolveCurrentDateRange()
+        XCTAssertLessThanOrEqual(customRange.start, customRange.end)
+    }
+
     func testLoadAndAnalyze_whenPermissionDenied_emitsUnauthorizedError() async {
         mockPhotoLibrary.authorizationResult = false
 

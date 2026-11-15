@@ -23,10 +23,32 @@ public final class PhotoLibraryService: PhotoLibraryServiceProtocol, @unchecked 
     }
 
     public func fetchRecentAssets(limit: Int = 100) async throws -> [PhotoAsset] {
+        try await fetchAssets(startDate: nil, endDate: nil, limit: limit)
+    }
+
+    public func fetchAssets(startDate: Date?, endDate: Date?, limit: Int = 200) async throws -> [PhotoAsset] {
         let options = PHFetchOptions()
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         options.fetchLimit = limit
         options.includeHiddenAssets = false
+
+        if let startDate, let endDate {
+            options.predicate = NSPredicate(
+                format: "creationDate >= %@ AND creationDate <= %@",
+                startDate as NSDate,
+                endDate as NSDate
+            )
+        } else if let startDate {
+            options.predicate = NSPredicate(
+                format: "creationDate >= %@",
+                startDate as NSDate
+            )
+        } else if let endDate {
+            options.predicate = NSPredicate(
+                format: "creationDate <= %@",
+                endDate as NSDate
+            )
+        }
 
         let fetchResult = PHAsset.fetchAssets(with: .image, options: options)
         var assets: [PhotoAsset] = []

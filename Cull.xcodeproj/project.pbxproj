@@ -64,7 +64,7 @@
 		888CC512D6A2728203DF1565 /* BurstTriageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageModels.swift; sourceTree = "<group>"; };
 		88B312EEE657DC1F385C597D /* PhotoLibraryServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryServiceProtocol.swift; sourceTree = "<group>"; };
 		895066A7BE9714BD93DF0D0C /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
-		8B74FFD4502E292F252692EA /* Cull.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Cull.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B74FFD4502E292F252692EA /* Cull.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cull.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D098D42076BA413BAACE558 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
 		9A48A3F688D131C4F3B3B7E1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9AA606EDF230BB8CE096C412 /* BurstTriageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageViewModel.swift; sourceTree = "<group>"; };
@@ -471,6 +471,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZC2TAFZ97Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Cull/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -490,6 +491,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ZC2TAFZ97Q;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = Cull/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

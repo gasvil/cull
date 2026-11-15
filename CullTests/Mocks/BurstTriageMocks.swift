@@ -35,6 +35,8 @@ public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchec
 
     public private(set) var requestedAuthCount: Int = 0
     public private(set) var fetchRecentAssetsLimit: Int?
+    public private(set) var fetchStartDate: Date?
+    public private(set) var fetchEndDate: Date?
     public private(set) var deletedAssetIds: [String] = []
 
     public init() {}
@@ -45,6 +47,13 @@ public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchec
     }
 
     public func fetchRecentAssets(limit: Int) async throws -> [PhotoAsset] {
+        fetchRecentAssetsLimit = limit
+        return recentAssetsResult
+    }
+
+    public func fetchAssets(startDate: Date?, endDate: Date?, limit: Int) async throws -> [PhotoAsset] {
+        fetchStartDate = startDate
+        fetchEndDate = endDate
         fetchRecentAssetsLimit = limit
         return recentAssetsResult
     }

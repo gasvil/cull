@@ -1,10 +1,20 @@
 import SwiftUI
 import OSLog
 
+/// Modos de selección de período para el análisis
+public enum DateFilterMode: String, CaseIterable, Sendable {
+    case today = "Hoy"
+    case yesterday = "Ayer"
+    case last7Days = "Últimos 7 días"
+    case singleDate = "Día específico"
+    case dateRange = "Rango de fechas"
+}
+
 /// Estados posibles de la pantalla de triaje de ráfagas.
 public enum BurstTriageViewState: Equatable, Sendable {
     case idle
     case requestingPermission
+    case selectingDate
     case analyzing(progress: Float, message: String)
     case loaded(clusters: [BurstCluster])
     case processingDiscard
@@ -18,6 +28,12 @@ public enum BurstTriageViewState: Equatable, Sendable {
 @MainActor
 public final class BurstTriageViewModel {
     public private(set) var state: BurstTriageViewState = .idle
+
+    // Filtros de fecha configurables por el usuario
+    public var filterMode: DateFilterMode = .today
+    public var selectedSingleDate: Date = Date()
+    public var selectedStartDate: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+    public var selectedEndDate: Date = Date()
 
     public let photoLibraryService: PhotoLibraryServiceProtocol
     private let clusteringService: BurstClusteringServiceProtocol
@@ -46,8 +62,53 @@ public final class BurstTriageViewModel {
         return 0
     }
 
-    /// Carga las fotos recientes, agrupa candidatos por ráfaga/ventana temporal y evalúa su calidad.
-    /// Si el conjunto de fotos recientes no ha cambiado, restaura el último análisis en memoria (FR-14).
+    /// Obtiene el rango de fechas (inicio y fin) según la opción seleccionada
+    public func resolveCurrentDateRange() -> (start: Date, end: Date) {
+        let calendar = Calendar.current
+        switch filterMode {
+        case .today:
+            let start = calendar.startOfDay(for: Date())
+            let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: Date()) ?? Date()
+            return (start, end)
+        case .yesterday:
+            let yesterday = calendar.date(byAdding: .day, value: -1, to: Date()) ?? Date()
+            let start = calendar.startOfDay(for: yesterday)
+            let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: yesterday) ?? yesterday
+            return (start, end)
+        case .last7Days:
+            let sevenDaysAgo = calendar.date(byAdding: .day, value: -6, to: Date()) ?? Date()
+            let start = calendar.startOfDay(for: sevenDaysAgo)
+            let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: Date()) ?? Date()
+            return (start, end)
+        case .singleDate:
+            let start = calendar.startOfDay(for: selectedSingleDate)
+            let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: selectedSingleDate) ?? selectedSingleDate
+            return (start, end)
+        case .dateRange:
+            let start = calendar.startOfDay(for: min(selectedStartDate, selectedEndDate))
+            let maxEnd = max(selectedStartDate, selectedEndDate)
+            let end = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: maxEnd) ?? maxEnd
+            return (start, end)
+        }
+    }
+
+    /// Prepara la pantalla mostrando el selector de fechas si no hay análisis activo
+    public func prepareView() {
+        if case .loaded = state {
+            return
+        }
+        if case .idle = state {
+            state = .selectingDate
+        }
+    }
+
+    /// Permite volver al selector de fechas para buscar en otro período
+    public func changeDateFilter() {
+        state = .selectingDate
+    }
+
+    /// Carga las fotos para el período seleccionado, agrupa candidatos por ráfaga/ventana temporal y evalúa su calidad.
+    /// Si el conjunto de fotos del período no ha cambiado, restaura el último análisis en memoria (FR-14).
     /// El parámetro `forceRefresh` permite ignorar el caché cuando el usuario lo solicite.
     public func loadAndAnalyzeClusters(forceRefresh: Bool = false) async {
         let isAuthorized = await photoLibraryService.requestAuthorization()
@@ -56,12 +117,18 @@ public final class BurstTriageViewModel {
             return
         }
 
+        let range = resolveCurrentDateRange()
+
         do {
-            let assets = try await photoLibraryService.fetchRecentAssets(limit: 200)
+            let assets = try await photoLibraryService.fetchAssets(
+                startDate: range.start,
+                endDate: range.end,
+                limit: 300
+            )
             guard !assets.isEmpty else {
                 cachedAssetSignature = []
                 cachedClusters = []
-                state = .empty(reason: "No se encontraron fotos en la biblioteca.")
+                state = .empty(reason: "No se encontraron fotos en el período seleccionado.")
                 return
             }
 
@@ -75,7 +142,7 @@ public final class BurstTriageViewModel {
                 return
             }
 
-            state = .analyzing(progress: 0.1, message: "Buscando fotos recientes...")
+            state = .analyzing(progress: 0.1, message: "Buscando fotos en la fecha seleccionada...")
 
             state = .analyzing(progress: 0.3, message: "Agrupando ráfagas y fotos similares...")
             let rawClusters = clusteringService.clusterize(assets: assets, timeThresholdSeconds: 5.0)
@@ -83,7 +150,7 @@ public final class BurstTriageViewModel {
             guard !rawClusters.isEmpty else {
                 cachedAssetSignature = currentSignature
                 cachedClusters = []
-                state = .empty(reason: "Carrete optimizado: no hay ráfagas ni tomas duplicadas pendientes.")
+                state = .empty(reason: "Carrete optimizado: no hay ráfagas ni fotos similares en esta fecha.")
                 return
             }
 

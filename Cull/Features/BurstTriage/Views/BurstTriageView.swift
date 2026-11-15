@@ -62,6 +62,7 @@ public struct BurstTriageView: View {
                         ForEach(clusters) { cluster in
                             BurstClusterCardView(
                                 cluster: cluster,
+                                photoLibraryService: viewModel.photoLibraryService,
                                 onToggleKeeper: { photoId in
                                     viewModel.toggleKeeper(photoId: photoId, in: cluster.id)
                                 },
@@ -110,10 +111,19 @@ public struct BurstTriageView: View {
             }
         }
         .navigationTitle("Triaje de Ráfagas")
-        .task {
-            if case .idle = viewModel.state {
-                await viewModel.loadAndAnalyzeClusters()
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Task {
+                        await viewModel.loadAndAnalyzeClusters(forceRefresh: true)
+                    }
+                } label: {
+                    Image(systemName: "arrow.clockwise")
+                }
             }
+        }
+        .task {
+            await viewModel.loadAndAnalyzeClusters(forceRefresh: false)
         }
     }
 }

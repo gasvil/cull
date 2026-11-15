@@ -12,6 +12,9 @@ public final class AppEnvironment {
     public let clusteringService: BurstClusteringServiceProtocol
     public let qualityEvaluator: ImageQualityEvaluatorProtocol
 
+    /// Instancia del ViewModel retenida para conservar el cache entre navegaciones
+    public private(set) var burstTriageViewModel: BurstTriageViewModel?
+
     public init(
         router: AppRouter = AppRouter(),
         logger: Logger = Logger(subsystem: "com.gabrielsanchez.cull", category: "App"),
@@ -27,10 +30,15 @@ public final class AppEnvironment {
     }
 
     public func makeBurstTriageViewModel() -> BurstTriageViewModel {
-        BurstTriageViewModel(
+        if let existing = burstTriageViewModel {
+            return existing
+        }
+        let newVM = BurstTriageViewModel(
             photoLibraryService: photoLibraryService,
             clusteringService: clusteringService,
             qualityEvaluator: qualityEvaluator
         )
+        self.burstTriageViewModel = newVM
+        return newVM
     }
 }

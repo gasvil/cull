@@ -217,6 +217,57 @@ final class BurstTriageViewModelTests: XCTestCase {
         XCTAssertTrue(success)
     }
 
+    func testLoadAndAnalyze_whenNoNewPhotos_reusesCachedAnalysis() async {
+        let baseTime = Date()
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2]
+
+        // 1. Primera carga: analiza y puebla la cache
+        await sut.loadAndAnalyzeClusters()
+        guard case .loaded(let initialClusters) = sut.state else {
+            XCTFail("Se esperaba estado .loaded")
+            return
+        }
+
+        // Modificamos el mock del evaluador para verificar que NO sea llamado en la segunda pasada
+        await mockQuality.setAssessment(QualityAssessment(sharpnessScore: 0.1, exposureScore: 0.1, compositeScore: 0.1))
+
+        // 2. Segunda carga sin fotos nuevas (mismos asset IDs)
+        await sut.loadAndAnalyzeClusters(forceRefresh: false)
+
+        guard case .loaded(let cachedClusters) = sut.state else {
+            XCTFail("Se esperaba estado .loaded desde caché")
+            return
+        }
+
+        // Los clusters deben ser los mismos del análisis inicial sin recalcularse
+        XCTAssertEqual(initialClusters.count, cachedClusters.count)
+        XCTAssertEqual(initialClusters.first?.id, cachedClusters.first?.id)
+    }
+
+    func testLoadAndAnalyze_whenNewPhotosArrive_recalculatesAnalysis() async {
+        let baseTime = Date()
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2]
+
+        await sut.loadAndAnalyzeClusters()
+
+        // Llega una nueva foto al carrete
+        let asset3 = PhotoAssetFixture.make(id: "3", creationDate: baseTime.addingTimeInterval(2.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2, asset3]
+
+        await sut.loadAndAnalyzeClusters(forceRefresh: false)
+
+        guard case .loaded(let recomputedClusters) = sut.state else {
+            XCTFail("Se esperaba recálculo")
+            return
+        }
+
+        XCTAssertEqual(recomputedClusters.first?.items.count, 3)
+    }
+
     func testToggleKeeper_whenMultipleKeepers_removesKeeperAndAddsToDiscards() async {
         let baseTime = Date()
         let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)

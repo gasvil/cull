@@ -4,6 +4,7 @@ import SwiftUI
 /// Permite al usuario alternar tomas conservadas, ejecutar 'Eliminar todo', 'Mantener todo' o purgar.
 public struct BurstClusterCardView: View {
     public let cluster: BurstCluster
+    public let photoLibraryService: PhotoLibraryServiceProtocol
     public let onToggleKeeper: (String) -> Void
     public let onDiscardAll: () -> Void
     public let onKeepAll: () -> Void
@@ -11,12 +12,14 @@ public struct BurstClusterCardView: View {
 
     public init(
         cluster: BurstCluster,
+        photoLibraryService: PhotoLibraryServiceProtocol,
         onToggleKeeper: @escaping (String) -> Void,
         onDiscardAll: @escaping () -> Void,
         onKeepAll: @escaping () -> Void,
         onConfirmDiscards: @escaping () -> Void
     ) {
         self.cluster = cluster
+        self.photoLibraryService = photoLibraryService
         self.onToggleKeeper = onToggleKeeper
         self.onDiscardAll = onDiscardAll
         self.onKeepAll = onKeepAll
@@ -75,14 +78,10 @@ public struct BurstClusterCardView: View {
                         } label: {
                             VStack(spacing: AppTheme.Spacing.xxSmall) {
                                 ZStack(alignment: .topTrailing) {
-                                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.small)
-                                        .fill(Color.gray.opacity(0.2))
-                                        .frame(width: 100, height: 130)
-                                        .overlay {
-                                            Image(systemName: "photo")
-                                                .font(.largeTitle)
-                                                .foregroundColor(.secondary)
-                                        }
+                                    PhotoThumbnailView(
+                                        assetId: candidate.id,
+                                        photoLibraryService: photoLibraryService
+                                    )
 
                                     // Badge de Favorita
                                     if candidate.asset.isFavorite {

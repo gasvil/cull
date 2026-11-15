@@ -19,10 +19,14 @@ public enum BurstTriageViewState: Equatable, Sendable {
 public final class BurstTriageViewModel {
     public private(set) var state: BurstTriageViewState = .idle
 
-    private let photoLibraryService: PhotoLibraryServiceProtocol
+    public let photoLibraryService: PhotoLibraryServiceProtocol
     private let clusteringService: BurstClusteringServiceProtocol
     private let qualityEvaluator: ImageQualityEvaluatorProtocol
     private let logger = Logger(subsystem: "com.gabrielsanchez.cull", category: "BurstTriageViewModel")
+
+    /// Cache del último análisis: guarda los IDs de las fotos analizadas y los clusters resultantes
+    private var cachedAssetSignature: [String] = []
+    private var cachedClusters: [BurstCluster] = []
 
     public init(
         photoLibraryService: PhotoLibraryServiceProtocol,
@@ -43,28 +47,42 @@ public final class BurstTriageViewModel {
     }
 
     /// Carga las fotos recientes, agrupa candidatos por ráfaga/ventana temporal y evalúa su calidad.
-    public func loadAndAnalyzeClusters() async {
-        state = .requestingPermission
-
+    /// Si el conjunto de fotos recientes no ha cambiado, restaura el último análisis en memoria (FR-14).
+    /// El parámetro `forceRefresh` permite ignorar el caché cuando el usuario lo solicite.
+    public func loadAndAnalyzeClusters(forceRefresh: Bool = false) async {
         let isAuthorized = await photoLibraryService.requestAuthorization()
         guard isAuthorized else {
             state = .error(.unauthorized)
             return
         }
 
-        state = .analyzing(progress: 0.1, message: "Buscando fotos recientes...")
-
         do {
             let assets = try await photoLibraryService.fetchRecentAssets(limit: 200)
             guard !assets.isEmpty else {
+                cachedAssetSignature = []
+                cachedClusters = []
                 state = .empty(reason: "No se encontraron fotos en la biblioteca.")
                 return
             }
+
+            let currentSignature = assets.map { $0.id }
+
+            // Comprobar si podemos reutilizar el análisis previo sin re-procesar (FR-14)
+            if !forceRefresh,
+               !cachedClusters.isEmpty,
+               currentSignature == cachedAssetSignature {
+                state = .loaded(clusters: cachedClusters)
+                return
+            }
+
+            state = .analyzing(progress: 0.1, message: "Buscando fotos recientes...")
 
             state = .analyzing(progress: 0.3, message: "Agrupando ráfagas y fotos similares...")
             let rawClusters = clusteringService.clusterize(assets: assets, timeThresholdSeconds: 5.0)
 
             guard !rawClusters.isEmpty else {
+                cachedAssetSignature = currentSignature
+                cachedClusters = []
                 state = .empty(reason: "Carrete optimizado: no hay ráfagas ni tomas duplicadas pendientes.")
                 return
             }
@@ -100,6 +118,9 @@ public final class BurstTriageViewModel {
                 state = .analyzing(progress: progress, message: "Evaluando lote \(index + 1) de \(rawClusters.count)...")
             }
 
+            cachedAssetSignature = currentSignature
+            cachedClusters = evaluatedClusters
+
             if evaluatedClusters.isEmpty {
                 state = .empty(reason: "Carrete optimizado: no hay fotos pendientes de descarte.")
             } else {
@@ -132,6 +153,7 @@ public final class BurstTriageViewModel {
         }
 
         clusters[index] = cluster
+        cachedClusters = clusters
         state = .loaded(clusters: clusters)
     }
 
@@ -145,6 +167,7 @@ public final class BurstTriageViewModel {
         cluster.discardIds = Set(cluster.items.map { $0.id })
 
         clusters[index] = cluster
+        cachedClusters = clusters
         state = .loaded(clusters: clusters)
     }
 
@@ -154,6 +177,7 @@ public final class BurstTriageViewModel {
               let index = clusters.firstIndex(where: { $0.id == clusterId }) else { return }
 
         clusters.remove(at: index)
+        cachedClusters = clusters
 
         if clusters.isEmpty {
             state = .empty(reason: "Todos los lotes fueron revisados con éxito.")
@@ -185,6 +209,7 @@ public final class BurstTriageViewModel {
             }
 
             clusters.remove(at: index)
+            cachedClusters = clusters
             if clusters.isEmpty {
                 state = .empty(reason: "¡Limpieza completada! El carrete está al día.")
             } else {

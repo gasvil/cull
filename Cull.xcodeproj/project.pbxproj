@@ -13,8 +13,10 @@
 		4ADB987898503BE4970CC794 /* PhotoLibraryServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B312EEE657DC1F385C597D /* PhotoLibraryServiceProtocol.swift */; };
 		4E879642AB7F6C609CE97FD9 /* BurstTriageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888CC512D6A2728203DF1565 /* BurstTriageModels.swift */; };
 		68B23093A9D2BC861FD1AA34 /* ImageQualityEvaluatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E438EC669BA3569503399867 /* ImageQualityEvaluatorProtocol.swift */; };
+		6F1C4A28C89A1FC61B212486 /* BurstClusteringServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679073F11F25EA47B46AB784 /* BurstClusteringServiceTests.swift */; };
 		74EBF26314A2DBDB5394FEC0 /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06EC613A9F085653571F4D9D /* AppEnvironment.swift */; };
 		79152968228E01789A66AAB3 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D098D42076BA413BAACE558 /* HomeViewModelTests.swift */; };
+		7D18DCD6C3F8E75349973F3F /* BurstClusteringService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ECCF5DC1451D6B886B55FCC /* BurstClusteringService.swift */; };
 		8048778B6470FD5DA01F818B /* AppError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895066A7BE9714BD93DF0D0C /* AppError.swift */; };
 		8472BD9B5FEBF53E243CAE13 /* BurstTriageMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C9F0C9FE5CC62A975D4AE9 /* BurstTriageMocks.swift */; };
 		8608944862DB818549BF06F5 /* BurstClusterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE0DF6A5F8E90EAB5A1AF4 /* BurstClusterTests.swift */; };
@@ -39,8 +41,10 @@
 /* Begin PBXFileReference section */
 		06EC613A9F085653571F4D9D /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		088B90B858A1EA100A25BC8F /* CullTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CullTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1ECCF5DC1451D6B886B55FCC /* BurstClusteringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstClusteringService.swift; sourceTree = "<group>"; };
 		43A8FE199E3707A6CE16BB9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		65C9F0C9FE5CC62A975D4AE9 /* BurstTriageMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageMocks.swift; sourceTree = "<group>"; };
+		679073F11F25EA47B46AB784 /* BurstClusteringServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstClusteringServiceTests.swift; sourceTree = "<group>"; };
 		7C58CFBC38EFA6BD2720F695 /* HomeItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeItem.swift; sourceTree = "<group>"; };
 		7E1DD7DB21C0F3366937B7C9 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		888CC512D6A2728203DF1565 /* BurstTriageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageModels.swift; sourceTree = "<group>"; };
@@ -153,9 +157,18 @@
 		64D4B5AD98D575CD1C618E23 /* BurstClustering */ = {
 			isa = PBXGroup;
 			children = (
+				1ECCF5DC1451D6B886B55FCC /* BurstClusteringService.swift */,
 				9F177EE3815AE95B7FCDB888 /* BurstClusteringServiceProtocol.swift */,
 			);
 			path = BurstClustering;
+			sourceTree = "<group>";
+		};
+		7794BCA16E386DA1709B8011 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				679073F11F25EA47B46AB784 /* BurstClusteringServiceTests.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		809F16737B5B9BBE0D815E6E /* Views */ = {
@@ -207,6 +220,7 @@
 				8D098D42076BA413BAACE558 /* HomeViewModelTests.swift */,
 				1D8C7FB601F0D03FB62C3074 /* Mocks */,
 				55D306534E186E9D4BB80488 /* Models */,
+				7794BCA16E386DA1709B8011 /* Services */,
 			);
 			path = CullTests;
 			sourceTree = "<group>";
@@ -356,6 +370,7 @@
 				F20809AEFA17EFB4F4EED846 /* AppRoute.swift in Sources */,
 				0B30E6F63714486348E193A2 /* AppRouter.swift in Sources */,
 				A05A78C8E55CA1F8C1CAB9F2 /* AppTheme.swift in Sources */,
+				7D18DCD6C3F8E75349973F3F /* BurstClusteringService.swift in Sources */,
 				C1B79E8BEACF77912C447E74 /* BurstClusteringServiceProtocol.swift in Sources */,
 				4E879642AB7F6C609CE97FD9 /* BurstTriageModels.swift in Sources */,
 				ADBFD1E3FFCC4A7B2A7A7720 /* CullApp.swift in Sources */,
@@ -372,6 +387,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8608944862DB818549BF06F5 /* BurstClusterTests.swift in Sources */,
+				6F1C4A28C89A1FC61B212486 /* BurstClusteringServiceTests.swift in Sources */,
 				8472BD9B5FEBF53E243CAE13 /* BurstTriageMocks.swift in Sources */,
 				79152968228E01789A66AAB3 /* HomeViewModelTests.swift in Sources */,
 			);

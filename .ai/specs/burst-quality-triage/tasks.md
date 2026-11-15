@@ -48,25 +48,25 @@
 
 ## 3. Block 2: Burst Clustering Service
 
-### Task 3.1 (Clustering Test Setup & Failing Tests)
+### Task 3.1 (Clustering Test Setup & Failing Tests) [x]
 * **Target File:** `CullTests/Services/BurstClusteringServiceTests.swift`
 * **Test Intentions:**
-  * `[ ] testClusterize_groupsPhotosWithin5SecondsInterval` (`FR-1`, `Assumption 1`)
-  * `[ ] testClusterize_separatesPhotosWithIntervalGreaterThan5Seconds` (`FR-1`, `EC-1`)
-  * `[ ] testClusterize_groupsNativeBurstWithSameIdentifierRegardlessOfTime` (`FR-1`)
-  * `[ ] testClusterize_designatesSinglePhotoWithHighestCompositeScoreAsKeeper` (`FR-4`, `Scenario 1`)
-  * `[ ] testClusterize_resolvesTiesBySelectingOldestPhoto` (`FR-5`, `Scenario 6`)
-  * `[ ] testClusterize_preselectsNonKeeperPhotosAsDiscardCandidates` (`FR-6`, `Scenario 1`)
-  * `[ ] testClusterize_neverPreselectsFavoritePhotosForDiscard` (`FR-7`, `Scenario 5`)
-  * `[ ] testClusterize_marksClusterAllKept_whenAllPhotosAreFavorites` (`FR-7`, `Assumption 4`)
+  * `[x] testClusterize_groupsPhotosWithin5SecondsInterval` (`FR-1`, `Assumption 1`)
+  * `[x] testClusterize_separatesPhotosWithIntervalGreaterThan5Seconds` (`FR-1`, `EC-1`)
+  * `[x] testClusterize_groupsNativeBurstWithSameIdentifierRegardlessOfTime` (`FR-1`)
+  * `[x] testClusterize_designatesSinglePhotoWithHighestCompositeScoreAsKeeper` (`FR-4`, `Scenario 1`)
+  * `[x] testClusterize_resolvesTiesBySelectingOldestPhoto` (`FR-5`, `Scenario 6`)
+  * `[x] testClusterize_preselectsNonKeeperPhotosAsDiscardCandidates` (`FR-6`, `Scenario 1`)
+  * `[x] testClusterize_neverPreselectsFavoritePhotosForDiscard` (`FR-7`, `Scenario 5`)
+  * `[x] testClusterize_marksClusterAllKept_whenAllPhotosAreFavorites` (`FR-7`, `Assumption 4`)
 
-### Task 3.2 (Clustering Implementation)
+### Task 3.2 (Clustering Implementation) [x]
 * **Target Files:**
   * `Cull/Services/BurstClustering/BurstClusteringServiceProtocol.swift`
   * `Cull/Services/BurstClustering/BurstClusteringService.swift`
 * **Scope:** Implementar el algoritmo de ordenamiento cronológico, ventana temporal móvil $\le 5.0$ s, agrupación por `burstIdentifier`, selección de keeper por puntaje compuesto/empates y exclusión de favoritas en `discardIds`.
 
-### Task 3.3 (Refactor & Optimization)
+### Task 3.3 (Refactor & Optimization) [x]
 * Optimizar la pasada de agrupación en $O(N \log N)$ para ordenamiento y $O(N)$ para particionado lineal, evitando copias redundantes de memoria.
 
 ---

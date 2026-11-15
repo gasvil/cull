@@ -136,7 +136,7 @@
 
 ## 7. Block 6: Presentation (SwiftUI Views & Navigation)
 
-### Task 7.1: UI Components Implementation
+### Task 7.1: UI Components Implementation [x]
 * **Target Files:**
   * `Cull/Features/BurstTriage/Views/BurstClusterCardView.swift`
   * `Cull/Features/BurstTriage/Views/BurstTriageView.swift`
@@ -145,7 +145,7 @@
   * Barra superior e inferior con megabytes recuperables totales y botón de acción principal "Purgar seleccionadas".
   * Manejo de estados: `loading` con barra de progreso, `empty` ("Carrete optimizado, sin ráfagas pendientes"), `error` con vista de recuperación.
 
-### Task 7.2: Integration into App Navigation
+### Task 7.2: Integration into App Navigation [x]
 * **Target Files:**
   * `Cull/Core/Navigation/AppRoute.swift`
   * `Cull/App/CullApp.swift`
@@ -155,12 +155,12 @@
 
 ## 8. Block 7: Verification & Quality Gates
 
-### Task 8.1: Project Generation & Build
+### Task 8.1: Project Generation & Build [x]
 * Ejecutar `xcodegen generate` para sincronizar nuevos archivos y fuentes con `Cull.xcodeproj`.
 
-### Task 8.2: Automated Test Suite & Coverage Bar
+### Task 8.2: Automated Test Suite & Coverage Bar [x]
 * Ejecutar la suite completa mediante `xcodebuild test`.
 * Verificar cobertura $\ge 80\%$ en `BurstTriageViewModel`, `BurstClusteringService` y `VisionQualityEvaluator` (`agents.md` P7).
 
-### Task 8.3: Quality & Concurrency Audit
+### Task 8.3: Quality & Concurrency Audit [x]
 * Ejecutar análisis estático con `SWIFT_STRICT_CONCURRENCY=complete` para garantizar cero advertencias de carreras de datos.

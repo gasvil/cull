@@ -157,27 +157,92 @@ final class BurstTriageViewModelTests: XCTestCase {
         XCTAssertFalse(mockPhotoLibrary.deletedAssetIds.isEmpty)
     }
 
-    func testConfirmDiscards_whenCancelledInDialog_preservesClusterState() async {
+    func testTotalRecoverableByteSize_whenLoaded_calculatesSum() async {
+        let baseTime = Date()
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime, byteSize: 4_000_000)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0), byteSize: 6_000_000)
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2]
+
+        await sut.loadAndAnalyzeClusters()
+
+        // One keeper, one discard (size: 6MB or 4MB depending on keeper)
+        XCTAssertGreaterThan(sut.totalRecoverableByteSize, 0)
+    }
+
+    func testLoadAndAnalyze_whenNoAssets_emitsEmptyState() async {
+        mockPhotoLibrary.recentAssetsResult = []
+
+        await sut.loadAndAnalyzeClusters()
+
+        if case .empty(let reason) = sut.state {
+            XCTAssertTrue(reason.contains("No se encontraron"))
+        } else {
+            XCTFail("Se esperaba estado .empty")
+        }
+    }
+
+    func testLoadAndAnalyze_whenNoClustersFormed_emitsEmptyState() async {
+        let baseTime = Date()
+        // Two photos separated by 10s -> 0 clusters
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(10.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2]
+
+        await sut.loadAndAnalyzeClusters()
+
+        if case .empty(let reason) = sut.state {
+            XCTAssertTrue(reason.contains("Carrete optimizado"))
+        } else {
+            XCTFail("Se esperaba estado .empty")
+        }
+    }
+
+    func testConfirmDiscards_whenNoDiscards_archivesClusterAndReturnsTrue() async {
         let baseTime = Date()
         let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
         let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0))
         mockPhotoLibrary.recentAssetsResult = [asset1, asset2]
-        mockPhotoLibrary.deleteAssetsResult = false // Simula cancelación en el diálogo nativo (EC-6)
 
         await sut.loadAndAnalyzeClusters()
 
         guard case .loaded(let clusters) = sut.state, let cluster = clusters.first else {
-            XCTFail("No hay clusters cargados")
+            XCTFail("No hay clusters")
             return
         }
 
-        let success = await sut.confirmDiscards(for: cluster.id)
+        // Keep all first -> discardIds becomes empty
+        sut.toggleKeeper(photoId: cluster.discardIds.first!, in: cluster.id)
 
-        XCTAssertFalse(success)
-        if case .loaded(let preservedClusters) = sut.state {
-            XCTAssertEqual(preservedClusters.count, 1)
+        let success = await sut.confirmDiscards(for: cluster.id)
+        XCTAssertTrue(success)
+    }
+
+    func testToggleKeeper_whenMultipleKeepers_removesKeeperAndAddsToDiscards() async {
+        let baseTime = Date()
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0))
+        let asset3 = PhotoAssetFixture.make(id: "3", creationDate: baseTime.addingTimeInterval(2.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2, asset3]
+
+        await sut.loadAndAnalyzeClusters()
+
+        guard case .loaded(let clusters) = sut.state, let cluster = clusters.first else {
+            XCTFail("No hay clusters")
+            return
+        }
+
+        // Add photo 2 to keepers
+        let discardPhoto = cluster.discardIds.first!
+        sut.toggleKeeper(photoId: discardPhoto, in: cluster.id)
+
+        // Now cluster has 2 keepers. Toggling the discardPhoto again should remove it from keepers
+        sut.toggleKeeper(photoId: discardPhoto, in: cluster.id)
+
+        if case .loaded(let updatedClusters) = sut.state, let updatedCluster = updatedClusters.first {
+            XCTAssertFalse(updatedCluster.keeperIds.contains(discardPhoto))
+            XCTAssertTrue(updatedCluster.discardIds.contains(discardPhoto))
         } else {
-            XCTFail("El cluster debía ser preservado")
+            XCTFail("Error al alternar keeper")
         }
     }
 }

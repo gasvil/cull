@@ -15,19 +15,52 @@ public struct HomeView: View {
                 ProgressView("Cargando...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             case .loaded(let items):
-                List(items) { item in
-                    Button {
-                        router.navigate(to: .detail(title: item.title))
-                    } label: {
-                        VStack(alignment: .leading, spacing: AppTheme.Spacing.xxSmall) {
-                            Text(item.title)
-                                .font(.headline)
-                                .foregroundColor(.primary)
-                            Text(item.subtitle)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                List {
+                    Section {
+                        Button {
+                            router.navigate(to: .burstTriage)
+                        } label: {
+                            HStack(spacing: AppTheme.Spacing.medium) {
+                                Image(systemName: "square.stack.3d.down.right.fill")
+                                    .font(.title2)
+                                    .foregroundColor(.blue)
+                                VStack(alignment: .leading, spacing: AppTheme.Spacing.xxSmall) {
+                                    Text("Curación de Ráfagas")
+                                        .font(.headline)
+                                        .foregroundColor(.primary)
+                                    Text("Detecta la mejor toma y agrupa duplicadas")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.footnote)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, AppTheme.Spacing.xxSmall)
                         }
-                        .padding(.vertical, AppTheme.Spacing.xxSmall)
+                    } header: {
+                        Text("Acciones Rápidas")
+                    }
+
+                    Section {
+                        ForEach(items) { item in
+                            Button {
+                                router.navigate(to: .detail(title: item.title))
+                            } label: {
+                                VStack(alignment: .leading, spacing: AppTheme.Spacing.xxSmall) {
+                                    Text(item.title)
+                                        .font(.headline)
+                                        .foregroundColor(.primary)
+                                    Text(item.subtitle)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                .padding(.vertical, AppTheme.Spacing.xxSmall)
+                            }
+                        }
+                    } header: {
+                        Text("Módulos")
                     }
                 }
             case .error(let message):

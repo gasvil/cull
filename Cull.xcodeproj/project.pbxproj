@@ -13,6 +13,7 @@
 		4ADB987898503BE4970CC794 /* PhotoLibraryServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88B312EEE657DC1F385C597D /* PhotoLibraryServiceProtocol.swift */; };
 		4E879642AB7F6C609CE97FD9 /* BurstTriageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888CC512D6A2728203DF1565 /* BurstTriageModels.swift */; };
 		5D2E3DFBA25A99D452887202 /* VisionQualityEvaluator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8285E597C2695DB8D66602CC /* VisionQualityEvaluator.swift */; };
+		6783216A8558EEBE416FE2B8 /* BurstTriageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197901C95DC5E977E006633F /* BurstTriageView.swift */; };
 		68B23093A9D2BC861FD1AA34 /* ImageQualityEvaluatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E438EC669BA3569503399867 /* ImageQualityEvaluatorProtocol.swift */; };
 		6C75389692371D7D13FD7085 /* BurstTriageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A248658564847676531E3F7 /* BurstTriageViewModelTests.swift */; };
 		6F1C4A28C89A1FC61B212486 /* BurstClusteringServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 679073F11F25EA47B46AB784 /* BurstClusteringServiceTests.swift */; };
@@ -29,6 +30,7 @@
 		ADBFD1E3FFCC4A7B2A7A7720 /* CullApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA9F9840533D31E49B73C4F /* CullApp.swift */; };
 		AF3593E215562E12AEC604FB /* PhotoLibraryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EE844DB7B673A8963C8CCF /* PhotoLibraryServiceTests.swift */; };
 		C1B79E8BEACF77912C447E74 /* BurstClusteringServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F177EE3815AE95B7FCDB888 /* BurstClusteringServiceProtocol.swift */; };
+		C8111313B8E89F0D8F9864ED /* BurstClusterCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8845B71008E8BA29A2B606B3 /* BurstClusterCardView.swift */; };
 		DC05311D58F0FF20B76D5AE4 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C618E29FE6B42DC8C90DE63B /* HomeViewModel.swift */; };
 		E8749F629F102F281B1CAF10 /* ImageQualityEvaluatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C199B43A1ED568354B2C111B /* ImageQualityEvaluatorTests.swift */; };
 		F20809AEFA17EFB4F4EED846 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0C223F7827E523D70D4CDF9 /* AppRoute.swift */; };
@@ -47,6 +49,7 @@
 /* Begin PBXFileReference section */
 		06EC613A9F085653571F4D9D /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		088B90B858A1EA100A25BC8F /* CullTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = CullTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		197901C95DC5E977E006633F /* BurstTriageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageView.swift; sourceTree = "<group>"; };
 		1ECCF5DC1451D6B886B55FCC /* BurstClusteringService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstClusteringService.swift; sourceTree = "<group>"; };
 		2A248658564847676531E3F7 /* BurstTriageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageViewModelTests.swift; sourceTree = "<group>"; };
 		43A8FE199E3707A6CE16BB9D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -56,6 +59,7 @@
 		7E1DD7DB21C0F3366937B7C9 /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		80EE844DB7B673A8963C8CCF /* PhotoLibraryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryServiceTests.swift; sourceTree = "<group>"; };
 		8285E597C2695DB8D66602CC /* VisionQualityEvaluator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionQualityEvaluator.swift; sourceTree = "<group>"; };
+		8845B71008E8BA29A2B606B3 /* BurstClusterCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstClusterCardView.swift; sourceTree = "<group>"; };
 		888CC512D6A2728203DF1565 /* BurstTriageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstTriageModels.swift; sourceTree = "<group>"; };
 		88B312EEE657DC1F385C597D /* PhotoLibraryServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoLibraryServiceProtocol.swift; sourceTree = "<group>"; };
 		895066A7BE9714BD93DF0D0C /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
@@ -147,6 +151,15 @@
 				B9E91F0FA6506D1B18404C7F /* Theme */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		4C2E6EB5F4A59E44455A508A /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8845B71008E8BA29A2B606B3 /* BurstClusterCardView.swift */,
+				197901C95DC5E977E006633F /* BurstTriageView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		50A975035D28CE025B8E1122 /* Home */ = {
@@ -290,6 +303,7 @@
 			children = (
 				519E9D04854817376C9FA036 /* Models */,
 				ACFF79C980809AEB2A20FF58 /* ViewModels */,
+				4C2E6EB5F4A59E44455A508A /* Views */,
 			);
 			path = BurstTriage;
 			sourceTree = "<group>";
@@ -404,9 +418,11 @@
 				F20809AEFA17EFB4F4EED846 /* AppRoute.swift in Sources */,
 				0B30E6F63714486348E193A2 /* AppRouter.swift in Sources */,
 				A05A78C8E55CA1F8C1CAB9F2 /* AppTheme.swift in Sources */,
+				C8111313B8E89F0D8F9864ED /* BurstClusterCardView.swift in Sources */,
 				7D18DCD6C3F8E75349973F3F /* BurstClusteringService.swift in Sources */,
 				C1B79E8BEACF77912C447E74 /* BurstClusteringServiceProtocol.swift in Sources */,
 				4E879642AB7F6C609CE97FD9 /* BurstTriageModels.swift in Sources */,
+				6783216A8558EEBE416FE2B8 /* BurstTriageView.swift in Sources */,
 				981CA69F2C91910F71C25E09 /* BurstTriageViewModel.swift in Sources */,
 				ADBFD1E3FFCC4A7B2A7A7720 /* CullApp.swift in Sources */,
 				1853F23F9E28B370340ACFBA /* HomeItem.swift in Sources */,

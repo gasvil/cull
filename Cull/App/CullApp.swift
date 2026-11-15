@@ -14,11 +14,14 @@ struct CullApp: App {
                         switch route {
                         case .home:
                             HomeView()
+                        case .burstTriage:
+                            BurstTriageView(viewModel: environment.makeBurstTriageViewModel())
                         case .detail(let title):
                             DetailPlaceholderView(title: title)
                         }
                     }
             }
+            .environment(environment)
             .environment(environment.router)
         }
     }

@@ -73,21 +73,21 @@
 
 ## 4. Block 3: Image Quality Evaluation (Vision Actor)
 
-### Task 4.1 (Quality Evaluator Test Setup & Failing Tests)
+### Task 4.1 (Quality Evaluator Test Setup & Failing Tests) [x]
 * **Target File:** `CullTests/Services/ImageQualityEvaluatorTests.swift`
 * **Test Intentions:**
-  * `[ ] testEvaluateQuality_calculatesSharpnessScoreNormalized` (`FR-2`)
-  * `[ ] testEvaluateQuality_penalizesClosedEyesInFaceAssessment` (`FR-3`, `Scenario 2`)
-  * `[ ] testEvaluateQuality_calculatesCompositeScoreWithoutFaces_usingSharpnessAndExposure` (`FR-4`, `EC-5`)
-  * `[ ] testEvaluateQuality_handlesCorruptedImageDataGracefully_withoutCrashing` (`NFR-5`, `P4`)
+  * `[x] testEvaluateQuality_calculatesSharpnessScoreNormalized` (`FR-2`)
+  * `[x] testEvaluateQuality_penalizesClosedEyesInFaceAssessment` (`FR-3`, `Scenario 2`)
+  * `[x] testEvaluateQuality_calculatesCompositeScoreWithoutFaces_usingSharpnessAndExposure` (`FR-4`, `EC-5`)
+  * `[x] testEvaluateQuality_handlesCorruptedImageDataGracefully_withoutCrashing` (`NFR-5`, `P4`)
 
-### Task 4.2 (Vision Evaluator Implementation)
+### Task 4.2 (Vision Evaluator Implementation) [x]
 * **Target Files:**
   * `Cull/Services/ImageQuality/ImageQualityEvaluatorProtocol.swift`
   * `Cull/Services/ImageQuality/VisionQualityEvaluator.swift`
 * **Scope:** Implementar `actor VisionQualityEvaluator` utilizando `VNCalculateImageAestheticsRequest` y `VNDetectFaceCaptureQualityRequest` / `VNDetectFaceLandmarksRequest`. Aplicar `autoreleasepool` y downsampling de imágenes para asegurar $\le 120$ MB de RAM (`NFR-3`).
 
-### Task 4.3 (Refactor & Performance Profiling)
+### Task 4.3 (Refactor & Performance Profiling) [x]
 * Validar que la ejecución concurrente sobre un lote de imágenes use `withThrowingTaskGroup` con límite de concurrencia para cumplir con latencia $\le 1.5$ s (`NFR-2`).
 
 ---

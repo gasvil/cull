@@ -39,14 +39,11 @@
    - Resolve formatting issues, code smells, and boundary violations (for example, views calling services directly, GCD usage, or force unwraps).
 6. **Acceptance & Manual Checks**
    - Walk through every acceptance criterion, including loading, empty, error, and offline states.
+   - Validate the UI against `.ai/instructions/ds.md` (tokens, typography, components, motion).
    - Verify accessibility (VoiceOver labels, Dynamic Type) and navigation flows.
-7. **Outcome, Cleanup & Push**
-   - Write `verification.md` with the evidence and post a short chat summary.
+7. **Outcome & Push**
+   - Post the verification summary directly in the chat. Do not create a file.
    - **On PASS:**
-     - Delete `verification.md`, keeping only `spec.md`:
-       ```bash
-       find .ai/specs/<feature> -maxdepth 1 -type f -name '*.md' ! -name 'spec.md' -delete
-       ```
      - Commit any pending verification fixes.
      - Push the branch to GitHub:
        ```bash
@@ -54,14 +51,13 @@
        ```
        Use `git push -u origin HEAD` if the branch has no upstream yet.
    - **On FAIL:**
-     - Keep `verification.md`.
      - Do not push.
-     - Prepare a prioritized fix plan: failed check, likely cause, files or areas to change, tests to add, and the verification step to re-run. Stop and wait for approval.
+     - Post a prioritized fix plan: failed check, likely cause, files or areas to change, tests to add, and the verification step to re-run. Stop and wait for approval.
 
 ## 3. Deliverable Format
-Write `.ai/specs/<feature>/verification.md` as working evidence and post a short summary in the chat. On PASS it is removed during cleanup; only `spec.md` survives.
+Post the verification summary directly in the chat. Do not create `verification.md` or any other ephemeral artifact; only `spec.md` remains in the feature folder.
 
-### `verification.md` Template Structure:
+### Chat Report Structure:
 
 **1. Summary**
 - Feature, date, commit SHA, and final status (`READY FOR MERGE` / `CHANGES REQUIRED`).
@@ -76,7 +72,7 @@ Write `.ai/specs/<feature>/verification.md` as working evidence and post a short
 - Accessibility, edge cases, and navigation, with observed results.
 
 **5. Findings**
-- On PASS: cleanup and push confirmation.
+- On PASS: push confirmation.
 - On FAIL: the prioritized fix plan (check, cause, files, tests, re-run step).
 
 ## Gate — Exit Checklist
@@ -86,9 +82,9 @@ Write `.ai/specs/<feature>/verification.md` as working evidence and post a short
 - [ ] Static analysis is clean.
 - [ ] Every acceptance criterion has recorded evidence.
 - [ ] Accessibility and edge states are verified.
-- [ ] `verification.md` was written and the chat summary posted.
-- [ ] On PASS, only `spec.md` remains in the feature folder.
+- [ ] The verification summary is posted in the chat.
+- [ ] No ephemeral verification file was created.
 - [ ] On PASS, the branch is pushed to `origin`.
-- [ ] On FAIL, `verification.md` is kept and a fix plan is presented.
+- [ ] On FAIL, a prioritized fix plan is presented and nothing was pushed.
 
 **Next:** merge the feature branch and close the SDD cycle.

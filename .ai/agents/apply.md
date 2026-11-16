@@ -13,6 +13,7 @@
 ## 2. Workflow
 1. **Load context**
    - Read `.ai/specs/<feature>/spec.md` and `agents.md`.
+   - Before any UI work, read `.ai/instructions/ds.md`.
    - Inspect the existing code before changing it; preserve established patterns.
 2. **Resolve ambiguity**
    - If the spec is incomplete or contradictory, stop, update `spec.md` with the user's approval, and continue.
@@ -40,4 +41,4 @@
 - [ ] Changes are committed.
 - [ ] Summary states what was built, what was tested, and any assumptions.
 
-**Next:** `.ai/verify.md`.
+**Next:** `.ai/agents/verify.md`.

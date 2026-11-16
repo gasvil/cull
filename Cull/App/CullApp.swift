@@ -16,6 +16,8 @@ struct CullApp: App {
                             HomeView()
                         case .burstTriage:
                             BurstTriageView(viewModel: environment.makeBurstTriageViewModel())
+                        case .noFaceTriage:
+                            NoFaceTriageView(viewModel: environment.makeNoFaceTriageViewModel())
                         case .detail(let title):
                             DetailPlaceholderView(title: title)
                         }

@@ -31,6 +31,7 @@ public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchec
     public var authorizationResult: Bool = true
     public var recentAssetsResult: [PhotoAsset] = []
     public var imageDataResult: Data = Data()
+    public var imageDataResolver: (@Sendable (String) -> Data)? = nil
     public var deleteAssetsResult: Bool = true
 
     public private(set) var requestedAuthCount: Int = 0
@@ -59,6 +60,9 @@ public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchec
     }
 
     public func fetchImageData(for assetId: String, targetSize: CGSize) async throws -> Data {
+        if let resolver = imageDataResolver {
+            return resolver(assetId)
+        }
         return imageDataResult
     }
 

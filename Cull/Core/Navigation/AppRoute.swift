@@ -5,5 +5,6 @@ import SwiftUI
 public enum AppRoute: Hashable, Sendable {
     case home
     case burstTriage
+    case noFaceTriage
     case detail(title: String)
 }

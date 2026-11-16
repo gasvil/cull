@@ -11,22 +11,26 @@ public final class AppEnvironment {
     public let photoLibraryService: PhotoLibraryServiceProtocol
     public let clusteringService: BurstClusteringServiceProtocol
     public let qualityEvaluator: ImageQualityEvaluatorProtocol
+    public let classifierService: FacelessClassificationServiceProtocol
 
     /// Instancia del ViewModel retenida para conservar el cache entre navegaciones
     public private(set) var burstTriageViewModel: BurstTriageViewModel?
+    public private(set) var noFaceTriageViewModel: NoFaceTriageViewModel?
 
     public init(
         router: AppRouter = AppRouter(),
         logger: Logger = Logger(subsystem: "com.gabrielsanchez.cull", category: "App"),
         photoLibraryService: PhotoLibraryServiceProtocol = PhotoLibraryService(),
         clusteringService: BurstClusteringServiceProtocol = BurstClusteringService(),
-        qualityEvaluator: ImageQualityEvaluatorProtocol = VisionQualityEvaluator()
+        qualityEvaluator: ImageQualityEvaluatorProtocol = VisionQualityEvaluator(),
+        classifierService: FacelessClassificationServiceProtocol = FacelessClassificationService()
     ) {
         self.router = router
         self.logger = logger
         self.photoLibraryService = photoLibraryService
         self.clusteringService = clusteringService
         self.qualityEvaluator = qualityEvaluator
+        self.classifierService = classifierService
     }
 
     public func makeBurstTriageViewModel() -> BurstTriageViewModel {
@@ -39,6 +43,18 @@ public final class AppEnvironment {
             qualityEvaluator: qualityEvaluator
         )
         self.burstTriageViewModel = newVM
+        return newVM
+    }
+
+    public func makeNoFaceTriageViewModel() -> NoFaceTriageViewModel {
+        if let existing = noFaceTriageViewModel {
+            return existing
+        }
+        let newVM = NoFaceTriageViewModel(
+            photoLibraryService: photoLibraryService,
+            classifierService: classifierService
+        )
+        self.noFaceTriageViewModel = newVM
         return newVM
     }
 }

@@ -39,6 +39,29 @@ public struct HomeView: View {
                             }
                             .padding(.vertical, AppTheme.Spacing.xxSmall)
                         }
+
+                        Button {
+                            router.navigate(to: .noFaceTriage)
+                        } label: {
+                            HStack(spacing: AppTheme.Spacing.medium) {
+                                Image(systemName: "person.slash.fill")
+                                    .font(.title2)
+                                    .foregroundColor(.orange)
+                                VStack(alignment: .leading, spacing: AppTheme.Spacing.xxSmall) {
+                                    Text("Fotos Sin Rostros")
+                                        .font(.headline)
+                                        .foregroundColor(.primary)
+                                    Text("Vouchers, documentos, capturas y fotos borrosas")
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.footnote)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding(.vertical, AppTheme.Spacing.xxSmall)
+                        }
                     } header: {
                         Text("Acciones Rápidas")
                     }

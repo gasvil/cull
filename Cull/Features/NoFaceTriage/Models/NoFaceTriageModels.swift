@@ -23,11 +23,40 @@ public enum FacelessCategory: String, CaseIterable, Identifiable, Sendable, Equa
     public var subtitle: String {
         switch self {
         case .utilitarian:
-            return "Vouchers, recibos, documentos y capturas"
+            return "Comprobantes, vouchers, texto o notas"
         case .deficient:
-            return "Fotos borrosas, oscuras o accidentales"
+            return "Fotos borrosas, accidentales o muy oscuras"
         case .toValidate:
-            return "Fotos intencionales (paisajes, mascotas, comida)"
+            return "Mascotas, paisajes, comida y arquitectura"
+        }
+    }
+
+    public var singularTitle: String {
+        switch self {
+        case .utilitarian:
+            return "Utilitaria"
+        case .deficient:
+            return "Deficiente"
+        case .toValidate:
+            return "Por Validar"
+        }
+    }
+
+    public var priorityTitle: String {
+        switch self {
+        case .utilitarian, .deficient:
+            return "ALTA PRIORIDAD"
+        case .toValidate:
+            return "PRIORIDAD MEDIA"
+        }
+    }
+
+    public var isHighPriority: Bool {
+        switch self {
+        case .utilitarian, .deficient:
+            return true
+        case .toValidate:
+            return false
         }
     }
 
@@ -88,6 +117,21 @@ public struct FacelessPhotoCandidate: Identifiable, Sendable, Equatable {
         self.sharpnessScore = sharpnessScore
         self.luminanceScore = luminanceScore
         self.isSelected = isSelected
+    }
+
+    public var asPhotoCandidate: PhotoCandidate {
+        PhotoCandidate(
+            asset: asset,
+            assessment: QualityAssessment(
+                sharpnessScore: sharpnessScore,
+                exposureScore: luminanceScore,
+                compositeScore: sharpnessScore
+            )
+        )
+    }
+
+    public var formattedByteSize: String {
+        ByteCountFormatter.string(fromByteCount: asset.byteSize, countStyle: .file)
     }
 }
 

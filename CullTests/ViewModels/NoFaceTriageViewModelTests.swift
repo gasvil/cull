@@ -339,4 +339,80 @@ final class NoFaceTriageViewModelTests: XCTestCase {
         let callCountThird = await mockClassifier.classifyCallCount
         XCTAssertEqual(callCountThird, 2)
     }
+
+    // MARK: - Redesign: Tabs and Bulk Selection (FR-4 to FR-7, FR-15, FR-16)
+
+    func testSelectCategory_updatesSelectedCategoryTab() {
+        XCTAssertEqual(sut.selectedCategory, .utilitarian)
+
+        sut.selectCategory(.toValidate)
+        XCTAssertEqual(sut.selectedCategory, .toValidate)
+
+        sut.selectCategory(.deficient)
+        XCTAssertEqual(sut.selectedCategory, .deficient)
+    }
+
+    func testToggleCategoryBulkSelection_whenAllSelected_deselectsAll() async {
+        let u1 = PhotoAssetFixture.make(id: "u1")
+        let u2 = PhotoAssetFixture.make(id: "u2")
+        mockPhotoService.recentAssetsResult = [u1, u2]
+        mockPhotoService.imageDataResolver = { $0.data(using: .utf8)! }
+
+        await mockClassifier.setResult(FacelessClassificationResult(hasFaces: false, category: .utilitarian), forAssetId: "u1")
+        await mockClassifier.setResult(FacelessClassificationResult(hasFaces: false, category: .utilitarian), forAssetId: "u2")
+
+        await sut.loadAndAnalyze()
+
+        XCTAssertTrue(sut.isAllSelected(in: .utilitarian))
+
+        // Al estar todas seleccionadas, la acción masiva las desmarca todas
+        sut.toggleCategoryBulkSelection(for: .utilitarian)
+        XCTAssertFalse(sut.isAllSelected(in: .utilitarian))
+        XCTAssertEqual(sut.group(for: .utilitarian)?.selectedCount, 0)
+    }
+
+    func testToggleCategoryBulkSelection_whenPartialSelected_selectsAll() async {
+        let u1 = PhotoAssetFixture.make(id: "u1")
+        let u2 = PhotoAssetFixture.make(id: "u2")
+        mockPhotoService.recentAssetsResult = [u1, u2]
+        mockPhotoService.imageDataResolver = { $0.data(using: .utf8)! }
+
+        await mockClassifier.setResult(FacelessClassificationResult(hasFaces: false, category: .utilitarian), forAssetId: "u1")
+        await mockClassifier.setResult(FacelessClassificationResult(hasFaces: false, category: .utilitarian), forAssetId: "u2")
+
+        await sut.loadAndAnalyze()
+
+        // Desmarcamos 1 foto (selección parcial: 1 de 2)
+        sut.toggleSelection(candidateId: "u1")
+        XCTAssertFalse(sut.isAllSelected(in: .utilitarian))
+        XCTAssertEqual(sut.group(for: .utilitarian)?.selectedCount, 1)
+
+        // Con selección parcial, la acción masiva marca todas
+        sut.toggleCategoryBulkSelection(for: .utilitarian)
+        XCTAssertTrue(sut.isAllSelected(in: .utilitarian))
+        XCTAssertEqual(sut.group(for: .utilitarian)?.selectedCount, 2)
+    }
+
+    func testAllSelectedCandidateIds_aggregatesAcrossCategories() async {
+        let u1 = PhotoAssetFixture.make(id: "u1")
+        let d1 = PhotoAssetFixture.make(id: "d1")
+        let v1 = PhotoAssetFixture.make(id: "v1")
+        mockPhotoService.recentAssetsResult = [u1, d1, v1]
+        mockPhotoService.imageDataResolver = { $0.data(using: .utf8)! }
+
+        await mockClassifier.setResult(FacelessClassificationResult(hasFaces: false, category: .utilitarian), forAssetId: "u1")
+        await mockClassifier.setResult(FacelessClassificationResult(hasFaces: false, category: .deficient), forAssetId: "d1")
+        await mockClassifier.setResult(FacelessClassificationResult(hasFaces: false, category: .toValidate), forAssetId: "v1")
+
+        await sut.loadAndAnalyze()
+
+        // u1 y d1 preseleccionadas por defecto, v1 desmarcada
+        XCTAssertEqual(sut.allSelectedCandidateIds.count, 2)
+        XCTAssertTrue(sut.allSelectedCandidateIds.contains("u1"))
+        XCTAssertTrue(sut.allSelectedCandidateIds.contains("d1"))
+
+        // Marcamos v1
+        sut.toggleSelection(candidateId: "v1")
+        XCTAssertEqual(sut.allSelectedCandidateIds.count, 3)
+    }
 }

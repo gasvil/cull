@@ -16,6 +16,12 @@ public final class NoFaceTriageViewModel {
     public var selectedStartDate: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
     public var selectedEndDate: Date = Date()
 
+    // Categoría activa del selector por pestañas (Assumption 1, FR-4, FR-5)
+    public var selectedCategory: FacelessCategory = .utilitarian
+
+    // Previsualización modal de inspección (FR-13)
+    public var previewCandidate: PhotoCandidate? = nil
+
     public let photoLibraryService: PhotoLibraryServiceProtocol
     public let classifierService: FacelessClassificationServiceProtocol
     private let logger = Logger(subsystem: "com.gabrielsanchez.cull", category: "NoFaceTriageViewModel")
@@ -39,16 +45,48 @@ public final class NoFaceTriageViewModel {
         return groups.reduce(0) { $0 + $1.recoverableByteSize }
     }
 
-    /// Número total de fotos seleccionadas para descarte en todas las categorías.
+    /// Número total de fotos seleccionadas para descarte en todas las categorías (FR-15).
     public var totalSelectedCount: Int {
         guard case .loaded(let groups) = state else { return 0 }
         return groups.reduce(0) { $0 + $1.selectedCount }
     }
 
-    /// Número total de fotos candidatas analizadas sin rostros.
+    /// Identificadores de todos los activos marcados para descarte entre todas las categorías (FR-16).
+    public var allSelectedCandidateIds: [String] {
+        guard case .loaded(let groups) = state else { return [] }
+        return groups.flatMap { $0.candidates.filter { $0.isSelected }.map { $0.id } }
+    }
+
+    /// Número total de fotos candidatas analizadas sin rostros (FR-2).
     public var totalCandidatesCount: Int {
         guard case .loaded(let groups) = state else { return 0 }
         return groups.reduce(0) { $0 + $1.totalCount }
+    }
+
+    /// Cambia la pestaña de categoría activa (FR-5).
+    public func selectCategory(_ category: FacelessCategory) {
+        selectedCategory = category
+    }
+
+    /// Retorna el grupo correspondiente a una categoría.
+    public func group(for category: FacelessCategory) -> FacelessTriageGroup? {
+        guard case .loaded(let groups) = state else { return nil }
+        return groups.first(where: { $0.category == category })
+    }
+
+    /// Indica si todas las fotos de la categoría especificada están marcadas (FR-7).
+    public func isAllSelected(in category: FacelessCategory) -> Bool {
+        guard let group = group(for: category) else { return false }
+        return group.allSelected
+    }
+
+    /// Alterna la selección masiva de la categoría: desmarca si todas están seleccionadas, marca si hay selección parcial o ninguna (FR-7).
+    public func toggleCategoryBulkSelection(for category: FacelessCategory) {
+        if isAllSelected(in: category) {
+            deselectAll(in: category)
+        } else {
+            selectAll(in: category)
+        }
     }
 
     /// Obtiene el rango de fechas (inicio y fin) según la opción seleccionada (FR-1).
@@ -81,13 +119,22 @@ public final class NoFaceTriageViewModel {
         }
     }
 
-    /// Prepara la pantalla mostrando el selector de fechas si no hay análisis activo.
+    /// Prepara la pantalla iniciando el análisis si hay un rango preconfigurado, o mostrando el selector si no
     public func prepareView() {
         if case .loaded = state {
             return
         }
+        if case .analyzing = state {
+            return
+        }
         if case .idle = state {
-            state = .selectingDate
+            if filterMode == .dateRange {
+                Task {
+                    await loadAndAnalyze()
+                }
+            } else {
+                state = .selectingDate
+            }
         }
     }
 

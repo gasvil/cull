@@ -35,6 +35,7 @@
 		8608944862DB818549BF06F5 /* BurstClusterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE0DF6A5F8E90EAB5A1AF4 /* BurstClusterTests.swift */; };
 		88585080823CDDE60C48F18C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8141975352D1C5715FF2B3C /* HomeView.swift */; };
 		88D6E18E5E15C1A77D3C6AFF /* HomeAndModeSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA60025FBF0E7AE170F49490 /* HomeAndModeSelectionTests.swift */; };
+		8D2D95ED88356C410D253FC0 /* PhotoDetailModalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF04A185FE2A25FDDBADA532 /* PhotoDetailModalView.swift */; };
 		913A44750CCE84B81A71D897 /* AppFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B309E7C0CB1907EF92348D4 /* AppFont.swift */; };
 		981CA69F2C91910F71C25E09 /* BurstTriageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA606EDF230BB8CE096C412 /* BurstTriageViewModel.swift */; };
 		9FB4EFAC022A1AD543F982BD /* NoFaceTriageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DED3E3FE12BAC0ECE4557A9 /* NoFaceTriageModels.swift */; };
@@ -114,6 +115,7 @@
 		9F177EE3815AE95B7FCDB888 /* BurstClusteringServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BurstClusteringServiceProtocol.swift; sourceTree = "<group>"; };
 		A0C223F7827E523D70D4CDF9 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
 		A8F5F9299DB3D3775A4DD8F4 /* NoFaceTriageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoFaceTriageViewModel.swift; sourceTree = "<group>"; };
+		AF04A185FE2A25FDDBADA532 /* PhotoDetailModalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDetailModalView.swift; sourceTree = "<group>"; };
 		B7F0B8FAB0A443A36E6E9EA8 /* PeriodSelectionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodSelectionModels.swift; sourceTree = "<group>"; };
 		BAA9F9840533D31E49B73C4F /* CullApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CullApp.swift; sourceTree = "<group>"; };
 		BB88B0F0E7538F70B10C43E0 /* FacelessClassificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FacelessClassificationService.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 			children = (
 				8845B71008E8BA29A2B606B3 /* BurstClusterCardView.swift */,
 				197901C95DC5E977E006633F /* BurstTriageView.swift */,
+				AF04A185FE2A25FDDBADA532 /* PhotoDetailModalView.swift */,
 				FA557109F7B0D1C42ED7BE32 /* PhotoThumbnailView.swift */,
 			);
 			path = Views;
@@ -610,6 +613,7 @@
 				BE5B361E0432BB2FABA2B5FB /* NoFaceTriageView.swift in Sources */,
 				19E380AA0CFC073755BDCB18 /* NoFaceTriageViewModel.swift in Sources */,
 				C26558E39D87823787B98929 /* PeriodSelectionModels.swift in Sources */,
+				8D2D95ED88356C410D253FC0 /* PhotoDetailModalView.swift in Sources */,
 				7BE9C1DECE32C685F6F6A7FF /* PhotoLibraryService.swift in Sources */,
 				4ADB987898503BE4970CC794 /* PhotoLibraryServiceProtocol.swift in Sources */,
 				08DFFD406C5FDF31CF02146C /* PhotoThumbnailView.swift in Sources */,

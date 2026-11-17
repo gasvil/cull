@@ -36,6 +36,7 @@ public final class BurstTriageViewModel {
     public var selectedEndDate: Date = Date()
 
     public let photoLibraryService: PhotoLibraryServiceProtocol
+    public var previewCandidate: PhotoCandidate? = nil
     private let clusteringService: BurstClusteringServiceProtocol
     private let qualityEvaluator: ImageQualityEvaluatorProtocol
     private let logger = Logger(subsystem: "com.gabrielsanchez.cull", category: "BurstTriageViewModel")
@@ -60,6 +61,30 @@ public final class BurstTriageViewModel {
             return clusters.reduce(0) { $0 + $1.recoverableByteSize }
         }
         return 0
+    }
+
+    /// Cantidad total de fotos analizadas y agrupadas en ráfagas (FR-2).
+    public var totalPhotosCount: Int {
+        if case .loaded(let clusters) = state {
+            return clusters.reduce(0) { $0 + $1.items.count }
+        }
+        return 0
+    }
+
+    /// Cantidad total consolidada de fotos marcadas para descarte (con indicador rojo) (FR-12).
+    public var totalMarkedDiscardsCount: Int {
+        if case .loaded(let clusters) = state {
+            return clusters.reduce(0) { $0 + $1.discardIds.count }
+        }
+        return 0
+    }
+
+    /// Identificadores de todos los activos marcados para descarte en los lotes.
+    public var allMarkedDiscardIds: [String] {
+        if case .loaded(let clusters) = state {
+            return clusters.flatMap { Array($0.discardIds) }
+        }
+        return []
     }
 
     /// Obtiene el rango de fechas (inicio y fin) según la opción seleccionada
@@ -92,13 +117,22 @@ public final class BurstTriageViewModel {
         }
     }
 
-    /// Prepara la pantalla mostrando el selector de fechas si no hay análisis activo
+    /// Prepara la pantalla ejecutando el análisis si hay un rango preconfigurado, o mostrando el selector si no
     public func prepareView() {
         if case .loaded = state {
             return
         }
+        if case .analyzing = state {
+            return
+        }
         if case .idle = state {
-            state = .selectingDate
+            if filterMode == .dateRange {
+                Task {
+                    await loadAndAnalyzeClusters()
+                }
+            } else {
+                state = .selectingDate
+            }
         }
     }
 
@@ -207,6 +241,21 @@ public final class BurstTriageViewModel {
         }
     }
 
+    /// Promueve una foto como la única ganadora del lote, pasando la anterior a descarte (FR-10, US-2).
+    public func setPrimaryWinner(photoId: String, in clusterId: UUID) {
+        guard case .loaded(var clusters) = state,
+              let index = clusters.firstIndex(where: { $0.id == clusterId }) else { return }
+
+        var cluster = clusters[index]
+        cluster.keeperIds = [photoId]
+        cluster.discardIds = Set(cluster.items.map { $0.id }).subtracting([photoId])
+        cluster.status = .pending
+
+        clusters[index] = cluster
+        cachedClusters = clusters
+        state = .loaded(clusters: clusters)
+    }
+
     /// Alterna la condición de una foto como 'Keeper' (soporta multi-keeper - FR-9, US-3).
     public func toggleKeeper(photoId: String, in clusterId: UUID) {
         guard case .loaded(var clusters) = state,
@@ -231,7 +280,7 @@ public final class BurstTriageViewModel {
         state = .loaded(clusters: clusters)
     }
 
-    /// Marca todo el lote para descarte si el usuario considera que toda la ráfaga es basura digital (FR-10, US-4).
+    /// Marca todo el lote para descarte; todos los indicadores pasan a rojo (FR-4, FR-6).
     public func discardAll(in clusterId: UUID) {
         guard case .loaded(var clusters) = state,
               let index = clusters.firstIndex(where: { $0.id == clusterId }) else { return }
@@ -239,25 +288,26 @@ public final class BurstTriageViewModel {
         var cluster = clusters[index]
         cluster.keeperIds.removeAll()
         cluster.discardIds = Set(cluster.items.map { $0.id })
+        cluster.status = .reviewedDiscarded
 
         clusters[index] = cluster
         cachedClusters = clusters
         state = .loaded(clusters: clusters)
     }
 
-    /// Conserva todo el lote sin descartar nada y lo archiva como revisado (FR-11, US-5, EC-4).
+    /// Conserva todo el lote; todos los indicadores pasan a verde (FR-4, FR-6).
     public func keepAll(in clusterId: UUID) {
         guard case .loaded(var clusters) = state,
               let index = clusters.firstIndex(where: { $0.id == clusterId }) else { return }
 
-        clusters.remove(at: index)
-        cachedClusters = clusters
+        var cluster = clusters[index]
+        cluster.keeperIds = Set(cluster.items.map { $0.id })
+        cluster.discardIds.removeAll()
+        cluster.status = .reviewedKept
 
-        if clusters.isEmpty {
-            state = .empty(reason: "Todos los lotes fueron revisados con éxito.")
-        } else {
-            state = .loaded(clusters: clusters)
-        }
+        clusters[index] = cluster
+        cachedClusters = clusters
+        state = .loaded(clusters: clusters)
     }
 
     /// Confirma la depuración de las fotos marcadas para descarte en un lote (FR-12, NFR-4).

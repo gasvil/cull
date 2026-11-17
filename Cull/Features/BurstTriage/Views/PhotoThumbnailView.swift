@@ -5,6 +5,7 @@ import UIKit
 public struct PhotoThumbnailView: View {
     public let assetId: String
     public let targetSize: CGSize
+    public let cornerRadius: CGFloat
     public let photoLibraryService: PhotoLibraryServiceProtocol
 
     @State private var image: UIImage? = nil
@@ -12,11 +13,13 @@ public struct PhotoThumbnailView: View {
 
     public init(
         assetId: String,
-        targetSize: CGSize = CGSize(width: 200, height: 260),
+        targetSize: CGSize = CGSize(width: 500, height: 500),
+        cornerRadius: CGFloat = AppTheme.CornerRadius.medium,
         photoLibraryService: PhotoLibraryServiceProtocol
     ) {
         self.assetId = assetId
         self.targetSize = targetSize
+        self.cornerRadius = cornerRadius
         self.photoLibraryService = photoLibraryService
     }
 
@@ -26,25 +29,22 @@ public struct PhotoThumbnailView: View {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 100, height: 130)
-                    .clipped()
             } else {
-                RoundedRectangle(cornerRadius: AppTheme.CornerRadius.small)
-                    .fill(Color.gray.opacity(0.15))
-                    .frame(width: 100, height: 130)
+                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                    .fill(AppColor.surfaceContainerHigh.opacity(0.4))
                     .overlay {
                         if isLoading {
                             ProgressView()
                                 .scaleEffect(0.8)
                         } else {
                             Image(systemName: "photo")
-                                .font(.title)
-                                .foregroundColor(.secondary)
+                                .font(.title3)
+                                .foregroundColor(AppColor.onSurfaceVariant)
                         }
                     }
             }
         }
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.small))
+        .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .task(id: assetId) {
             await loadThumbnail()
         }

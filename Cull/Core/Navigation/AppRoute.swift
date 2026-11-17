@@ -7,5 +7,6 @@ public enum AppRoute: Hashable, Sendable {
     case modeSelection(startDate: Date, endDate: Date, periodDescription: String)
     case burstTriage
     case noFaceTriage
+    case reviewConfirmation(markedPhotoIds: [String], totalByteSize: Int64)
     case detail(title: String)
 }

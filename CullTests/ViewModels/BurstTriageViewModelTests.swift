@@ -172,15 +172,54 @@ final class BurstTriageViewModelTests: XCTestCase {
 
         sut.keepAll(in: cluster.id)
 
-        if case .loaded(let updatedClusters) = sut.state {
-            // Cluster was resolved and removed from pending queue
-            XCTAssertEqual(updatedClusters.count, 0)
-        } else if case .empty = sut.state {
-            // Transitioned to empty state as all clusters were reviewed
-            XCTAssertTrue(true)
+        if case .loaded(let updatedClusters) = sut.state, let updatedCluster = updatedClusters.first {
+            XCTAssertEqual(updatedClusters.count, 1)
+            XCTAssertTrue(updatedCluster.discardIds.isEmpty)
+            XCTAssertEqual(updatedCluster.keeperIds.count, 2)
+            XCTAssertEqual(updatedCluster.status, .reviewedKept)
         } else {
             XCTFail("Estado no esperado: \(sut.state)")
         }
+    }
+
+    func testSetPrimaryWinner_promotesPhotoAndSetsPreviousToDiscard() async {
+        let baseTime = Date()
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2]
+
+        await sut.loadAndAnalyzeClusters()
+
+        guard case .loaded(let clusters) = sut.state, let cluster = clusters.first else {
+            XCTFail("No hay clusters")
+            return
+        }
+
+        // Toca la foto alternativa "2" para promoverla a ganadora (FR-10, US-2)
+        sut.setPrimaryWinner(photoId: "2", in: cluster.id)
+
+        guard case .loaded(let updatedClusters) = sut.state, let updated = updatedClusters.first else {
+            XCTFail("Error al obtener cluster actualizado")
+            return
+        }
+
+        XCTAssertEqual(updated.keeperIds, ["2"])
+        XCTAssertEqual(updated.discardIds, ["1"])
+        XCTAssertEqual(updated.primaryWinner?.id, "2")
+    }
+
+    func testTotalCounts_whenClustersLoaded_calculatesPhotosAndMarkedDiscards() async {
+        let baseTime = Date()
+        let asset1 = PhotoAssetFixture.make(id: "1", creationDate: baseTime)
+        let asset2 = PhotoAssetFixture.make(id: "2", creationDate: baseTime.addingTimeInterval(1.0))
+        let asset3 = PhotoAssetFixture.make(id: "3", creationDate: baseTime.addingTimeInterval(2.0))
+        mockPhotoLibrary.recentAssetsResult = [asset1, asset2, asset3]
+
+        await sut.loadAndAnalyzeClusters()
+
+        XCTAssertEqual(sut.totalPhotosCount, 3)
+        XCTAssertEqual(sut.totalMarkedDiscardsCount, 2)
+        XCTAssertEqual(sut.allMarkedDiscardIds.count, 2)
     }
 
     func testConfirmDiscards_invokesService_andRemovesClusterFromQueueOnSuccess() async {

@@ -18,6 +18,10 @@ public final class AppRouter {
         path.removeLast()
     }
 
+    public func navigateBack() {
+        pop()
+    }
+
     public func popToRoot() {
         path = NavigationPath()
     }

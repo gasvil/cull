@@ -1,29 +1,32 @@
 import SwiftUI
 
 /// Componente que renderiza una tarjeta de lote de ráfaga o fotos similares.
-/// Permite al usuario alternar tomas conservadas, ejecutar 'Eliminar todo', 'Mantener todo' o purgar.
+/// Muestra un visor prominente de la foto ganadora y un carrusel inferior con todas las tomas (FR-3, FR-8).
 public struct BurstClusterCardView: View {
+    public let clusterIndex: Int
     public let cluster: BurstCluster
     public let photoLibraryService: PhotoLibraryServiceProtocol
-    public let onToggleKeeper: (String) -> Void
+    public let onSelectWinner: (String) -> Void
     public let onDiscardAll: () -> Void
     public let onKeepAll: () -> Void
-    public let onConfirmDiscards: () -> Void
+    public let onPreview: (PhotoCandidate) -> Void
 
     public init(
+        clusterIndex: Int = 1,
         cluster: BurstCluster,
         photoLibraryService: PhotoLibraryServiceProtocol,
-        onToggleKeeper: @escaping (String) -> Void,
+        onSelectWinner: @escaping (String) -> Void,
         onDiscardAll: @escaping () -> Void,
         onKeepAll: @escaping () -> Void,
-        onConfirmDiscards: @escaping () -> Void
+        onPreview: @escaping (PhotoCandidate) -> Void
     ) {
+        self.clusterIndex = clusterIndex
         self.cluster = cluster
         self.photoLibraryService = photoLibraryService
-        self.onToggleKeeper = onToggleKeeper
+        self.onSelectWinner = onSelectWinner
         self.onDiscardAll = onDiscardAll
         self.onKeepAll = onKeepAll
-        self.onConfirmDiscards = onConfirmDiscards
+        self.onPreview = onPreview
     }
 
     private var formattedRecoverableSpace: String {
@@ -32,116 +35,195 @@ public struct BurstClusterCardView: View {
 
     public var body: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.small) {
-            // Cabecera: Cantidad de fotos, espacio a liberar y acciones rápidas
-            HStack {
-                VStack(alignment: .leading, spacing: AppTheme.Spacing.xxSmall) {
-                    Text("\(cluster.items.count) fotos en serie")
-                        .font(.headline)
-                    if cluster.recoverableByteSize > 0 {
-                        Text("Recupera \(formattedRecoverableSpace)")
-                            .font(.subheadline)
-                            .foregroundColor(.green)
-                            .bold()
-                    } else {
-                        Text("Todas las fotos conservadas")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
+            // Cabecera: Dot identificador verde, título cronológico y menú contextual (FR-3, FR-4)
+            HStack(alignment: .center, spacing: AppTheme.Spacing.small) {
+                Circle()
+                    .fill(AppColor.keep)
+                    .frame(width: 8, height: 8)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Ráfaga #\(clusterIndex) · \(cluster.formattedTime)")
+                        .font(AppFont.headlineSmall)
+                        .foregroundColor(AppColor.onSurface)
+
+                    Text("\(cluster.formattedDate) · \(cluster.items.count) tomas")
+                        .font(AppFont.monoSmall)
+                        .foregroundColor(AppColor.onSurfaceVariant)
                 }
 
                 Spacer()
 
-                // Acciones Rápidas (FR-10, FR-11)
+                // Menú contextual ⋮ (FR-4)
                 Menu {
-                    Button(role: .destructive, action: onDiscardAll) {
-                        Label("Eliminar todo el lote", systemImage: "trash.fill")
+                    Button {
+                        onKeepAll()
+                    } label: {
+                        Label("Conservar todo", systemImage: "checkmark.circle")
                     }
-                    Button(action: onKeepAll) {
-                        Label("Mantener todo el lote", systemImage: "checkmark.circle")
+
+                    Button(role: .destructive) {
+                        onDiscardAll()
+                    } label: {
+                        Label("Eliminar todo", systemImage: "trash")
                     }
                 } label: {
-                    Image(systemName: "ellipsis.circle")
-                        .font(.title2)
-                        .foregroundColor(.primary)
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(AppColor.onSurfaceVariant)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
+                .accessibilityLabel("Opciones de ráfaga #\(clusterIndex)")
             }
 
-            // Carrusel horizontal de miniaturas con estados
+            // Visor Hero de la foto Ganadora (FR-5, FR-6)
+            if let heroCandidate = cluster.primaryWinner {
+                ZStack(alignment: .bottom) {
+                    PhotoThumbnailView(
+                        assetId: heroCandidate.id,
+                        targetSize: CGSize(width: 1024, height: 1024),
+                        cornerRadius: AppTheme.CornerRadius.medium,
+                        photoLibraryService: photoLibraryService
+                    )
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 300)
+                    .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium, style: .continuous))
+                    .contentShape(Rectangle())
+                    .onLongPressGesture {
+                        onPreview(heroCandidate)
+                    }
+
+                    // Insignias sobre la foto ganadora (FR-6)
+                    HStack {
+                        if cluster.keeperIds.contains(heroCandidate.id) {
+                            HStack(spacing: 4) {
+                                Image(systemName: "star.fill")
+                                    .font(.system(size: 10))
+                                Text("Ganadora (Conservar)")
+                                    .font(AppFont.labelSmall)
+                                    .bold()
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 6)
+                            .background(AppColor.keep)
+                            .clipShape(Capsule())
+                        }
+
+                        Spacer()
+
+                        HStack(spacing: 4) {
+                            Image(systemName: "hand.tap.fill")
+                                .font(.system(size: 10))
+                            Text("Mantén presionado")
+                                .font(AppFont.labelSmall)
+                        }
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(Color.black.opacity(0.6))
+                        .clipShape(Capsule())
+                    }
+                    .padding(AppTheme.Spacing.small)
+                }
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Foto ganadora de la ráfaga, mantén presionado para ampliar")
+            }
+
+            // Fila de resumen: tomas alternativas y espacio liberable (FR-7)
+            HStack {
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(AppColor.cull)
+                        .frame(width: 6, height: 6)
+                    Text("\(cluster.discardIds.count) tomas alternativas")
+                        .font(AppFont.monoSmall)
+                        .foregroundColor(AppColor.onSurfaceVariant)
+                }
+
+                Spacer()
+
+                if cluster.recoverableByteSize > 0 {
+                    Text("Liberará ~\(formattedRecoverableSpace)")
+                        .font(AppFont.monoSmall)
+                        .bold()
+                        .foregroundColor(AppColor.cull)
+                } else {
+                    Text("0 B a liberar")
+                        .font(AppFont.monoSmall)
+                        .foregroundColor(AppColor.keep)
+                }
+            }
+            .padding(.top, AppTheme.Spacing.xxSmall)
+
+            // Carrusel horizontal de miniaturas (FR-8, FR-9, FR-10)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: AppTheme.Spacing.small) {
                     ForEach(cluster.items) { candidate in
                         let isKeeper = cluster.keeperIds.contains(candidate.id)
-                        let isDiscard = cluster.discardIds.contains(candidate.id)
+                        let isWinner = cluster.primaryWinner?.id == candidate.id
 
                         Button {
-                            onToggleKeeper(candidate.id)
+                            onSelectWinner(candidate.id)
                         } label: {
-                            VStack(spacing: AppTheme.Spacing.xxSmall) {
-                                ZStack(alignment: .topTrailing) {
-                                    PhotoThumbnailView(
-                                        assetId: candidate.id,
-                                        photoLibraryService: photoLibraryService
-                                    )
+                            ZStack(alignment: .topTrailing) {
+                                PhotoThumbnailView(
+                                    assetId: candidate.id,
+                                    targetSize: CGSize(width: 250, height: 250),
+                                    cornerRadius: AppTheme.CornerRadius.small,
+                                    photoLibraryService: photoLibraryService
+                                )
+                                .frame(width: 66, height: 66)
+                                .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.small, style: .continuous))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: AppTheme.CornerRadius.small, style: .continuous)
+                                        .strokeBorder(isWinner ? AppColor.keep : Color.clear, lineWidth: 2)
+                                )
 
-                                    // Badge de Favorita
-                                    if candidate.asset.isFavorite {
-                                        Image(systemName: "heart.fill")
-                                            .foregroundColor(.red)
-                                            .padding(6)
-                                            .background(.ultraThinMaterial, in: Circle())
-                                            .padding(4)
-                                    }
-                                }
-
-                                // Indicador de estado y calidad
+                                // Indicador de estado (verde para keeper, rojo con checkmark para descarte - FR-9)
                                 if isKeeper {
-                                    Label("Conservar", systemImage: "checkmark.circle.fill")
-                                        .font(.caption2)
-                                        .bold()
-                                        .foregroundColor(.green)
-                                } else if isDiscard {
-                                    Label("Descartar", systemImage: "trash")
-                                        .font(.caption2)
-                                        .foregroundColor(.red)
+                                    Circle()
+                                        .fill(AppColor.keep)
+                                        .frame(width: 20, height: 20)
+                                        .overlay(
+                                            Image(systemName: "checkmark")
+                                                .font(.system(size: 10, weight: .bold))
+                                                .foregroundColor(.white)
+                                        )
+                                        .offset(x: -4, y: 4)
                                 } else {
-                                    Text("Omitida")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                }
-
-                                if let score = candidate.assessment?.compositeScore {
-                                    Text(String(format: "Score: %.0f%%", score * 100))
-                                        .font(.system(size: 9))
-                                        .foregroundColor(.secondary)
+                                    Circle()
+                                        .fill(AppColor.cull)
+                                        .frame(width: 20, height: 20)
+                                        .overlay(
+                                            Image(systemName: "checkmark")
+                                                .font(.system(size: 10, weight: .bold))
+                                                .foregroundColor(.white)
+                                        )
+                                        .offset(x: -4, y: 4)
                                 }
                             }
                         }
                         .buttonStyle(.plain)
+                        .simultaneousGesture(
+                            LongPressGesture(minimumDuration: 0.4)
+                                .onEnded { _ in
+                                    onPreview(candidate)
+                                }
+                        )
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel(isKeeper ? "Toma conservada" : "Toma marcada para eliminar")
                     }
                 }
                 .padding(.vertical, AppTheme.Spacing.xxSmall)
             }
-
-            // Botón de confirmación para este lote
-            if !cluster.discardIds.isEmpty {
-                Button(action: onConfirmDiscards) {
-                    HStack {
-                        Spacer()
-                        Image(systemName: "trash.fill")
-                        Text("Purgar \(cluster.discardIds.count) fotos (\(formattedRecoverableSpace))")
-                            .bold()
-                        Spacer()
-                    }
-                    .padding(.vertical, AppTheme.Spacing.small)
-                    .background(Color.red.opacity(0.15))
-                    .foregroundColor(.red)
-                    .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.small))
-                }
-            }
         }
         .padding(AppTheme.Spacing.medium)
-        .background(Color(uiColor: .secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.medium))
-        .shadow(color: Color.black.opacity(0.04), radius: 4, x: 0, y: 2)
+        .background(AppColor.surface)
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.CornerRadius.large, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.large, style: .continuous)
+                .strokeBorder(AppColor.outlineVariant, lineWidth: 1)
+        )
     }
 }

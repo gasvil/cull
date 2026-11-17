@@ -33,7 +33,7 @@ public struct PhotoAsset: Identifiable, Sendable, Equatable, Hashable {
 }
 
 /// Evaluación facial de calidad (apertura de ojos, parpadeos).
-public struct FaceAssessment: Sendable, Equatable {
+public struct FaceAssessment: Sendable, Equatable, Hashable {
     public let faceCount: Int
     public let allEyesOpen: Bool
     public let openEyesConfidence: Float
@@ -46,7 +46,7 @@ public struct FaceAssessment: Sendable, Equatable {
 }
 
 /// Evaluación objetiva de calidad para una fotografía.
-public struct QualityAssessment: Sendable, Equatable {
+public struct QualityAssessment: Sendable, Equatable, Hashable {
     public let sharpnessScore: Float          // 0.0 - 1.0 (FR-2)
     public let exposureScore: Float           // 0.0 - 1.0
     public let faceAssessment: FaceAssessment? // nil si no hay rostros (FR-3, EC-5)
@@ -66,7 +66,7 @@ public struct QualityAssessment: Sendable, Equatable {
 }
 
 /// Candidata a triaje dentro de un grupo con su evaluación asociada.
-public struct PhotoCandidate: Identifiable, Sendable, Equatable {
+public struct PhotoCandidate: Identifiable, Sendable, Equatable, Hashable {
     public var id: String { asset.id }
     public let asset: PhotoAsset
     public let assessment: QualityAssessment?
@@ -111,6 +111,29 @@ public struct BurstCluster: Identifiable, Sendable, Equatable {
         items
             .filter { discardIds.contains($0.id) }
             .reduce(0) { $0 + $1.asset.byteSize }
+    }
+
+    /// Candidata destacada actual (la primera en keeperIds o la primera del grupo).
+    public var primaryWinner: PhotoCandidate? {
+        items.first(where: { keeperIds.contains($0.id) }) ?? items.first
+    }
+
+    /// Hora formateada de la primera toma del lote (ej. "11:24 AM").
+    public var formattedTime: String {
+        guard let firstDate = items.first?.asset.creationDate else { return "" }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_ES")
+        formatter.dateFormat = "h:mm a"
+        return formatter.string(from: firstDate)
+    }
+
+    /// Fecha corta formateada de la primera toma del lote (ej. "16 Nov").
+    public var formattedDate: String {
+        guard let firstDate = items.first?.asset.creationDate else { return "" }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_ES")
+        formatter.dateFormat = "d MMM"
+        return formatter.string(from: firstDate)
     }
 
     public var isAllDiscarded: Bool {

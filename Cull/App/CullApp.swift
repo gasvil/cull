@@ -14,6 +14,14 @@ struct CullApp: App {
                         switch route {
                         case .home:
                             HomeView()
+                        case .modeSelection(let start, let end, let desc):
+                            ModeSelectionView(
+                                viewModel: ModeSelectionViewModel(
+                                    startDate: start,
+                                    endDate: end,
+                                    periodDescription: desc
+                                )
+                            )
                         case .burstTriage:
                             BurstTriageView(viewModel: environment.makeBurstTriageViewModel())
                         case .noFaceTriage:

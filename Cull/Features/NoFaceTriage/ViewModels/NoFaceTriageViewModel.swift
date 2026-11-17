@@ -96,6 +96,13 @@ public final class NoFaceTriageViewModel {
         state = .selectingDate
     }
 
+    /// Configura directamente el rango de fechas desde el selector de período
+    public func setDateRange(start: Date, end: Date) {
+        self.filterMode = .dateRange
+        self.selectedStartDate = start
+        self.selectedEndDate = end
+    }
+
     /// Carga las fotos del período, excluye favoritas y fotos con rostros, y las clasifica.
     /// Si los filtros y las fotos no cambiaron, restaura inmediatamente el caché (FR-12, EC-7).
     public func loadAndAnalyze(forceRefresh: Bool = false) async {

@@ -107,6 +107,13 @@ public final class BurstTriageViewModel {
         state = .selectingDate
     }
 
+    /// Configura directamente el rango de fechas desde el selector de período
+    public func setDateRange(start: Date, end: Date) {
+        self.filterMode = .dateRange
+        self.selectedStartDate = start
+        self.selectedEndDate = end
+    }
+
     /// Carga las fotos para el período seleccionado, agrupa candidatos por ráfaga/ventana temporal y evalúa su calidad.
     /// Si el conjunto de fotos del período no ha cambiado, restaura el último análisis en memoria (FR-14).
     /// El parámetro `forceRefresh` permite ignorar el caché cuando el usuario lo solicite.

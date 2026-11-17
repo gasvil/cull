@@ -30,6 +30,7 @@ public enum PhotoAssetFixture {
 public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchecked Sendable {
     public var authorizationResult: Bool = true
     public var recentAssetsResult: [PhotoAsset] = []
+    public var assetCountResult: Int = 142
     public var imageDataResult: Data = Data()
     public var imageDataResolver: (@Sendable (String) -> Data)? = nil
     public var deleteAssetsResult: Bool = true
@@ -57,6 +58,12 @@ public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchec
         fetchEndDate = endDate
         fetchRecentAssetsLimit = limit
         return recentAssetsResult
+    }
+
+    public func fetchAssetCount(startDate: Date?, endDate: Date?) async throws -> Int {
+        fetchStartDate = startDate
+        fetchEndDate = endDate
+        return assetCountResult
     }
 
     public func fetchImageData(for assetId: String, targetSize: CGSize) async throws -> Data {

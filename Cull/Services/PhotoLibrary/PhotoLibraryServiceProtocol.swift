@@ -5,6 +5,7 @@ public protocol PhotoLibraryServiceProtocol: Sendable {
     func requestAuthorization() async -> Bool
     func fetchRecentAssets(limit: Int) async throws -> [PhotoAsset]
     func fetchAssets(startDate: Date?, endDate: Date?, limit: Int) async throws -> [PhotoAsset]
+    func fetchAssetCount(startDate: Date?, endDate: Date?) async throws -> Int
     func fetchImageData(for assetId: String, targetSize: CGSize) async throws -> Data
     func deleteAssets(withIDs ids: [String]) async throws -> Bool
 }

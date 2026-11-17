@@ -71,6 +71,32 @@ public final class PhotoLibraryService: PhotoLibraryServiceProtocol, @unchecked 
         return assets
     }
 
+    public func fetchAssetCount(startDate: Date?, endDate: Date?) async throws -> Int {
+        let options = PHFetchOptions()
+        options.includeHiddenAssets = false
+
+        if let startDate, let endDate {
+            options.predicate = NSPredicate(
+                format: "creationDate >= %@ AND creationDate <= %@",
+                startDate as NSDate,
+                endDate as NSDate
+            )
+        } else if let startDate {
+            options.predicate = NSPredicate(
+                format: "creationDate >= %@",
+                startDate as NSDate
+            )
+        } else if let endDate {
+            options.predicate = NSPredicate(
+                format: "creationDate <= %@",
+                endDate as NSDate
+            )
+        }
+
+        let fetchResult = PHAsset.fetchAssets(with: .image, options: options)
+        return fetchResult.count
+    }
+
     public func fetchImageData(for assetId: String, targetSize: CGSize) async throws -> Data {
         let options = PHFetchOptions()
         let fetchResult = PHAsset.fetchAssets(withLocalIdentifiers: [assetId], options: options)

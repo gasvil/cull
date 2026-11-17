@@ -276,7 +276,9 @@ public struct NoFaceTriageView: View {
                 router.navigate(
                     to: .reviewConfirmation(
                         markedPhotoIds: viewModel.allSelectedCandidateIds,
-                        totalByteSize: viewModel.totalRecoverableByteSize
+                        totalByteSize: viewModel.totalRecoverableByteSize,
+                        periodDescription: viewModel.periodDescription,
+                        triageMode: .noFace
                     )
                 )
             } label: {

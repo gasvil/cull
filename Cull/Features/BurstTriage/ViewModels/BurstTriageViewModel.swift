@@ -34,6 +34,7 @@ public final class BurstTriageViewModel {
     public var selectedSingleDate: Date = Date()
     public var selectedStartDate: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
     public var selectedEndDate: Date = Date()
+    public var periodDescription: String = "Últimos 7 días"
 
     public let photoLibraryService: PhotoLibraryServiceProtocol
     public var previewCandidate: PhotoCandidate? = nil

@@ -27,6 +27,7 @@ public final class ModeSelectionViewModel {
         case .burst:
             let burstVM = environment.makeBurstTriageViewModel()
             burstVM.setDateRange(start: startDate, end: endDate)
+            burstVM.periodDescription = periodDescription
             Task {
                 await burstVM.loadAndAnalyzeClusters()
             }
@@ -35,6 +36,7 @@ public final class ModeSelectionViewModel {
         case .noFace:
             let noFaceVM = environment.makeNoFaceTriageViewModel()
             noFaceVM.setDateRange(start: startDate, end: endDate)
+            noFaceVM.periodDescription = periodDescription
             Task {
                 await noFaceVM.loadAndAnalyze()
             }

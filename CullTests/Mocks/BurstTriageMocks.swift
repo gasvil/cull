@@ -34,6 +34,7 @@ public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchec
     public var imageDataResult: Data = Data()
     public var imageDataResolver: (@Sendable (String) -> Data)? = nil
     public var deleteAssetsResult: Bool = true
+    public var deleteAssetsError: Error? = nil
 
     public private(set) var requestedAuthCount: Int = 0
     public private(set) var fetchRecentAssetsLimit: Int?
@@ -74,6 +75,9 @@ public final class MockPhotoLibraryService: PhotoLibraryServiceProtocol, @unchec
     }
 
     public func deleteAssets(withIDs ids: [String]) async throws -> Bool {
+        if let error = deleteAssetsError {
+            throw error
+        }
         deletedAssetIds.append(contentsOf: ids)
         return deleteAssetsResult
     }

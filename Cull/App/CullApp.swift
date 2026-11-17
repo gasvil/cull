@@ -26,8 +26,16 @@ struct CullApp: App {
                             BurstTriageView(viewModel: environment.makeBurstTriageViewModel())
                         case .noFaceTriage:
                             NoFaceTriageView(viewModel: environment.makeNoFaceTriageViewModel())
-                        case .reviewConfirmation(let markedIds, let byteSize):
-                            DetailPlaceholderView(title: "Paso 4: Revisión Final (\(markedIds.count) fotos)")
+                        case .reviewConfirmation(let markedIds, let byteSize, let periodDesc, let mode):
+                            ConfirmationView(
+                                viewModel: ConfirmationViewModel(
+                                    markedPhotoIds: markedIds,
+                                    totalByteSize: byteSize,
+                                    periodDescription: periodDesc,
+                                    triageMode: mode,
+                                    photoLibraryService: environment.photoLibraryService
+                                )
+                            )
                         case .detail(let title):
                             DetailPlaceholderView(title: title)
                         }

@@ -185,7 +185,9 @@ public struct BurstTriageView: View {
                 router.navigate(
                     to: .reviewConfirmation(
                         markedPhotoIds: viewModel.allMarkedDiscardIds,
-                        totalByteSize: viewModel.totalRecoverableByteSize
+                        totalByteSize: viewModel.totalRecoverableByteSize,
+                        periodDescription: viewModel.periodDescription,
+                        triageMode: .burst
                     )
                 )
             } label: {

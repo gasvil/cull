@@ -15,6 +15,7 @@ public final class NoFaceTriageViewModel {
     public var selectedSingleDate: Date = Date()
     public var selectedStartDate: Date = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
     public var selectedEndDate: Date = Date()
+    public var periodDescription: String = "Últimos 7 días"
 
     // Categoría activa del selector por pestañas (Assumption 1, FR-4, FR-5)
     public var selectedCategory: FacelessCategory = .utilitarian
